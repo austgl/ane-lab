@@ -1,0 +1,13 @@
+<extension xmlns="http://ns.adobe.com/air/extension/2.5">
+    <id>iconBmpData</id>
+    <versionNumber>1.0.0</versionNumber>
+    <platforms>
+        <platform name="Android-ARM">
+            <applicationDeployment>
+                <nativeLibrary>AneLab-IconBmpData-Java.jar</nativeLibrary>
+                <initializer>com.example.ane.iconbmpdata.IconBmpDataFREExtension</initializer>
+                <finalizer>com.example.ane.iconbmpdata.IconBmpDataFREExtension</finalizer>
+            </applicationDeployment>
+        </platform>
+    </platforms>
+</extension>
