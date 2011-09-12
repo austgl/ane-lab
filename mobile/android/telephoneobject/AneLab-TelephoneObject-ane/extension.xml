@@ -1,0 +1,13 @@
+<extension xmlns="http://ns.adobe.com/air/extension/2.5">
+    <id>phone</id>
+    <versionNumber>1.0.0</versionNumber>
+    <platforms>
+        <platform name="Android-ARM">
+            <applicationDeployment>
+                <nativeLibrary>AneLab-TelephoneObject-Java.jar</nativeLibrary>
+                <initializer>com.example.ane.telephoneobj.TelephoneObjectFREExtension</initializer>
+                <finalizer>com.example.ane.telephoneobj.TelephoneObjectFREExtension</finalizer>
+            </applicationDeployment>
+        </platform>
+    </platforms>
+</extension>
