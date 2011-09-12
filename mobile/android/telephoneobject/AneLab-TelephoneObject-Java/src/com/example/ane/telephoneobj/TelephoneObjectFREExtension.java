@@ -165,13 +165,13 @@ public class TelephoneObjectFREExtension implements FREExtension {
 		String phoneType = "";
 		switch (telMngr.getPhoneType()) {
 			case TelephonyManager.PHONE_TYPE_CDMA:
-				networkType = "CDMA";
+				phoneType = "CDMA";
 				break;
 			case TelephonyManager.PHONE_TYPE_GSM:
-				networkType = "GSM";
+				phoneType = "GSM";
 				break;
 			case TelephonyManager.PHONE_TYPE_NONE:
-				networkType = "NONE";
+				phoneType = "NONE";
 				break;
 		}
 		String simState = "";
