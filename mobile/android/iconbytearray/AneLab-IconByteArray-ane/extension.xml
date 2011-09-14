@@ -1,0 +1,13 @@
+<extension xmlns="http://ns.adobe.com/air/extension/2.5">
+    <id>iconByteArray</id>
+    <versionNumber>1.0.0</versionNumber>
+    <platforms>
+        <platform name="Android-ARM">
+            <applicationDeployment>
+                <nativeLibrary>AneLab-IconByteArray-Java.jar</nativeLibrary>
+                <initializer>com.example.ane.iconbytearray.IconByteArrayFREExtension</initializer>
+                <finalizer>com.example.ane.iconbytearray.IconByteArrayFREExtension</finalizer>
+            </applicationDeployment>
+        </platform>
+    </platforms>
+</extension>
