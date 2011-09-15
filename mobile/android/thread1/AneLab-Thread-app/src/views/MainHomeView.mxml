@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark" title="HomeView"
+		creationComplete="view1_creationCompleteHandler(event)">
+
+	<fx:Script>
+		<![CDATA[
+			import com.example.ane.thread.ThreadExtension;
+
+			import mx.events.FlexEvent;
+
+			private var ane:ThreadExtension = new ThreadExtension();
+
+
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+				ind.visible = true;
+				out.text = ane.getAddress(input.text);
+			}
+
+			protected function view1_creationCompleteHandler(event:FlexEvent):void
+			{
+				ane.addEventListener(StatusEvent.STATUS, onStatusEventHandler);
+			}
+
+			private function onStatusEventHandler(event:StatusEvent):void {
+				out.text = ane.getData();
+				ind.visible = false;
+			}
+
+		]]>
+	</fx:Script>
+
+	<fx:Declarations>
+		<!-- 非ビジュアルエレメント (サービス、値オブジェクトなど) をここに配置 -->
+	</fx:Declarations>
+	<s:layout>
+		<s:VerticalLayout />
+	</s:layout>
+	<s:TextInput id="input" />
+	<s:Button label="GET latitude ＆ longitude" click="button1_clickHandler(event)"
+			  enabled="{input.text.length > 1}"/>
+	<s:HGroup paddingBottom="6" paddingTop="6" paddingLeft="6" paddingRight="6">
+		<s:BusyIndicator id="ind" visible="false" /><s:Label id="out" />
+	</s:HGroup>
+</s:View>
