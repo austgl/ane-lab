@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark" title="つぶやき for ANE"
+		creationComplete="view1_creationCompleteHandler(event)" xmlns:mx="library://ns.adobe.com/flex/mx">
+
+	<fx:Script>
+		<![CDATA[
+			import com.example.ane.speechtext.SpeechTextExtension;
+
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+
+			import spark.events.IndexChangeEvent;
+
+			private var ane:SpeechTextExtension = new SpeechTextExtension();
+
+			private var selectedIdx:int = -1;
+			private var lastTwieet:String = "";
+
+			[Bindable]
+			private var arr:ArrayCollection = new ArrayCollection();
+
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+				// 未選択状態でスピーチ実行。
+				selectedIdx = -1;
+				ane.speech();
+			}
+
+			protected function view1_creationCompleteHandler(event:FlexEvent):void
+			{
+				NativeApplication.nativeApplication.addEventListener(
+					Event.ACTIVATE, onActivate);
+			}
+
+			private function onActivate(event:Event):void {
+
+				var twieet:String = ane.speechData();
+				if (twieet == "") {
+					return;
+				}
+				switch (true) {
+					case twieet == "削除" && selectedIdx != -1:
+					case twieet == "delete" && selectedIdx != -1:
+						arr.removeItemAt(selectedIdx);
+						return;
+					case twieet.indexOf("クリア") == 0:
+						arr.source = [];
+						break;
+					case twieet.indexOf("ひらけ") == 0:
+						lastTwieet = twieet;
+						twieet = "ゴマ";
+						break;
+					case twieet == "しまったしまった":
+						lastTwieet = twieet;
+						twieet = "島倉千代子";
+						break;
+					case twieet == "困った困った":
+						lastTwieet = twieet;
+						twieet = "こまどり姉妹";
+						break;
+					case twieet == "終了" || twieet == "終わり":
+						ane.end(lastTwieet);
+						NativeApplication.nativeApplication.exit();
+						break;
+					default:
+						lastTwieet = twieet;
+				}
+
+				var data:Object = null;
+				if (selectedIdx == -1) {
+					data = new Object();
+					data.userId = "@tokufxug" + " " +  dateFormatter.format(new Date());
+					arr.addItemAt(data, 0);
+				} else {
+					data = lst.selectedItem;
+					arr.setItemAt(data, selectedIdx);
+				}
+				data.twieet = twieet;
+			}
+
+			protected function lst_changeHandler(event:IndexChangeEvent):void
+			{
+				selectedIdx = (event.currentTarget as List).selectedIndex;
+				ane.speech();
+			}
+		]]>
+	</fx:Script>
+
+	<fx:Declarations>
+		<mx:DateFormatter id="dateFormatter"
+						  formatString="YYYY/MM/DD JJ:NN:SS" />
+	</fx:Declarations>
+	<s:VGroup width="100%" height="100%" paddingTop="6" paddingBottom="6" paddingLeft="6" paddingRight="6">
+		<s:Button label="New Tweet!!" click="button1_clickHandler(event)" width="200" height="50"/>
+		<s:List id="lst" width="100%" height="100%" dataProvider="{arr}"
+				change="lst_changeHandler(event)">
+			<s:itemRenderer>
+				<fx:Component>
+					<s:IconItemRenderer
+						messageStyleName="rendererLabel"
+						fontSize="25"
+						labelField="twieet"
+						messageField="userId"
+						decorator="@Embed(source='assets/tokufxug.png')"
+						/>
+				</fx:Component>
+			</s:itemRenderer>
+		</s:List>
+	</s:VGroup>
+</s:View>
