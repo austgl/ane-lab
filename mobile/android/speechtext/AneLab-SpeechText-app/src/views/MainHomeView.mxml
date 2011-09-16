@@ -46,7 +46,7 @@
 						return;
 					case twieet.indexOf("クリア") == 0:
 						arr.source = [];
-						break;
+						return;
 					case twieet.indexOf("ひらけ") == 0:
 						lastTwieet = twieet;
 						twieet = "ゴマ";
