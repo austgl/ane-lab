@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark" title="ANE Lab NFC"
+		creationComplete="view1_creationCompleteHandler(event)">
+
+	<fx:Script>
+		<![CDATA[
+			import com.example.ane.nfc.fre.extension.context.NFCExtensionContext;
+
+			import flash.sampler.getInvocationCount;
+
+			import mx.events.FlexEvent;
+
+			private var nfc:NFCExtensionContext = new NFCExtensionContext();
+
+			protected function view1_creationCompleteHandler(event:FlexEvent):void
+			{
+				var ret:String = nfc.getInfo() as String;
+				nfcInfo.text = ret;
+			}
+
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				NativeApplication.nativeApplication.exit();
+			}
+
+		]]>
+	</fx:Script>
+	<s:actionContent>
+		<s:Button label="END" click="button1_clickHandler(event)"/>
+	</s:actionContent>
+	<fx:Declarations>
+		<!-- 非ビジュアルエレメント (サービス、値オブジェクトなど) をここに配置 -->
+	</fx:Declarations>
+	<s:layout>
+		<s:VerticalLayout />
+	</s:layout>
+	<s:Label text="GET EXTRA ID!!" />
+	<s:TextArea id="nfcInfo"/>
+</s:View>
