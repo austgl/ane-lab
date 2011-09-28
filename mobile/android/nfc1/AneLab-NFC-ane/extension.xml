@@ -1,0 +1,13 @@
+<extension xmlns="http://ns.adobe.com/air/extension/2.5">
+    <id>nfc</id>
+    <versionNumber>1.0.0</versionNumber>
+    <platforms>
+        <platform name="Android-ARM">
+            <applicationDeployment>
+                <nativeLibrary>AneLab-NFC-Java.jar</nativeLibrary>
+                <initializer>com.example.ane.nfc.fre.extension.NFCFREExtension</initializer>
+                <finalizer>com.example.ane.nfc.fre.extension.NFCFREExtension</finalizer>
+            </applicationDeployment>
+        </platform>
+    </platforms>
+</extension>
