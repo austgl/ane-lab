@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties includeAllClasses="true" useMultiPlatformConfig="true" version="3">
+  <includeClasses>
+    <classEntry path="market.anelab.android.fre.context.AneLabMarketExtensionContext"/>
+    <classEntry path="market.anelab.android.event.AneLabMarketSupportEvent"/>
+    <classEntry path="market.anelab.android.event.AneLabMarketPurchaseStateChangeEvent"/>
+    <classEntry path="market.anelab.android.event.AneLabRequestPurchaseResponseEvent"/>
+  </includeClasses>
+  <includeResources/>
+  <namespaceManifests/>
+</flexLibProperties>
