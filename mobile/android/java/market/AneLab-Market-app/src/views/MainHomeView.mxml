@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		title="ANE Market"
+		creationComplete="view1_creationCompleteHandler(event)" xmlns:mx="library://ns.adobe.com/flex/mx">
+
+	<fx:Script>
+		<![CDATA[
+			import constants.AneLabMarketConst;
+
+			import market.anelab.android.event.*;
+			import market.anelab.android.fre.context.AneLabMarketExtensionContext;
+			import market.anelab.android.model.PurchaseStateChange;
+
+			import mx.events.FlexEvent;
+
+			private var context:AneLabMarketExtensionContext =
+				new AneLabMarketExtensionContext();
+
+			protected function view1_creationCompleteHandler(event:FlexEvent):void
+			{
+				context.addEventListener(AneLabMarketSupportEvent.MARKET_SUPPORT,
+					onMarkerSupportHandler);
+				context.addEventListener(
+					AneLabMarketPurchaseStateChangeEvent.PURCHASE_STATE_CHANGE,
+					onPurchaseStateChangeEventHandler);
+				context.addEventListener(
+					AneLabRequestPurchaseResponseEvent.REQUEST_PURCHASE_RESPONSE,
+					onRequestPurchaseResponseEventHandler
+					);
+				context.useMarket(AneLabMarketConst.KEY);
+			}
+
+			private function onMarkerSupportHandler(event:AneLabMarketSupportEvent):void {
+				if (event.isSupport()) {
+					support.text = "マーケット利用可能です。";
+					itemGrp.enabled = true;
+				} else {
+					support.text = "マーケットは利用できません。";
+				}
+				context.removeEventListener(AneLabMarketSupportEvent.MARKET_SUPPORT,
+					onMarkerSupportHandler);
+			}
+
+			private function onPurchaseStateChangeEventHandler(
+				event:AneLabMarketPurchaseStateChangeEvent):void {
+
+				history.text+=event.purchaseStateChange + "\r";
+				var psc:PurchaseStateChange = context.purchaseStateChange();
+				var purchaseData:String = "";
+
+				purchaseData = "    purchaseState " + psc.purchaseState + "\r";
+				purchaseData += "    itemId " + psc.itemId + "\r";
+				purchaseData += "    quantity "  + psc.quantity + "\r";
+				purchaseData += "    purchaseTime "  + psc.purchaseTime + "\r";
+
+				history.text += purchaseData + "\r";
+			}
+			private function onRequestPurchaseResponseEventHandler(
+				event:AneLabRequestPurchaseResponseEvent) {
+				support.text = event.result;
+			}
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+				var itemCode:String = selectedItem.selectedValue as String;
+				support.text = "取引中…";
+				context.request(itemCode);
+			}
+
+			protected function button2_clickHandler(event:MouseEvent):void
+			{
+				context.end();
+				NativeApplication.nativeApplication.exit();
+			}
+
+		]]>
+	</fx:Script>
+
+	<fx:Declarations>
+		<s:RadioButtonGroup id="selectedItem" />
+		<s:DateTimeFormatter id="dateFormatter"
+						  dateTimePattern="YYYY/MM/DD JJ:NN:SS"/>
+	</fx:Declarations>
+	<s:actionContent>
+		<s:Button label="END" click="button2_clickHandler(event)" />
+	</s:actionContent>
+
+	<s:VGroup>
+		<s:HGroup paddingBottom="6" paddingLeft="6" paddingRight="6" paddingTop="6">
+			<s:Label id="support" text="確認中…" />
+		</s:HGroup>
+		<s:VGroup id="itemGrp" enabled="false" paddingBottom="6" paddingLeft="6" paddingRight="6" paddingTop="6">
+			<s:RadioButton label="Test 【BUY】【購入】"
+						   group="{selectedItem}" value="android.test.purchased"
+						   selected="true"/>
+			<s:RadioButton label="Test 【CANCEL】【キャンセル】"
+						   group="{selectedItem}" value="android.test.canceled"/>
+			<s:RadioButton label="Test 【REFUNDED】【払い戻し】"
+						   group="{selectedItem}" value="android.test.refunded"/>
+			<s:RadioButton label="Test 【UNAVAILABLE】【利用不可】"
+						   group="{selectedItem}" value="android.test.item_unavailable"/>
+			<!--
+			<s:RadioButton label="Item 【SWORD】【剣】"
+						   group="{selectedItem}" value="sword_001"/>
+			<s:RadioButton label="Item 【POTION】【ポーション】"
+						   group="{selectedItem}" value="potion_001"/>
+			-->
+
+			<s:Button label="購入" click="button1_clickHandler(event)"/>
+		</s:VGroup>
+		<s:HGroup paddingBottom="6" paddingLeft="6" paddingRight="6" paddingTop="6">
+			<s:TextArea id="history" editable="false"/>
+		</s:HGroup>
+	</s:VGroup>
+</s:View>
