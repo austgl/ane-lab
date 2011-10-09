@@ -1,5 +1,5 @@
 /*
- * hello-jni.h
+ * AneLab-HelloNDK-jni.h
  * author @tokufxug
  * twitter http://twitter.com/tokufxug
  */
