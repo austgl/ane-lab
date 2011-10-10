@@ -40,7 +40,7 @@ FREObject GetHelloWorld(FREContext ctx, void* funcData, uint32_t argc, FREObject
 	FREGetObjectAsUTF8(argv[0], &len, &value);
 
 	const char *ndk = " for NDK!!";
-	char *str = (const char*) value;
+	char *str = (char*) value;
 	strcat(str, ndk);
 	FREObject retStr;
     FRENewObjectFromUTF8(strlen(str)+1, (const uint8_t *)str, &retStr);
