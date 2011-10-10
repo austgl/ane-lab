@@ -12,8 +12,8 @@ package com.example.extension.context
 				"ndk", "type");
 		}
 
-		public function helloNDK():String {
-			return context.call("GetHelloWorld") as String;
+		public function helloNDK(value:String = "Hello World "):String {
+			return context.call("GetHelloWorld", value) as String;
 		}
 	}
 }

@@ -34,8 +34,15 @@ void ExtFinalizer(void* extData) {
     return;
 }
 FREObject GetHelloWorld(FREContext ctx, void* funcData, uint32_t argc, FREObject *argv) {
-    const char *str = "HelloNDK!!";
-    FREObject retStr;
+
+	uint32_t len = strlen( (const char*) argv[0]) + 1;
+	const uint8_t* value;
+	FREGetObjectAsUTF8(argv[0], &len, &value);
+
+	const char *ndk = " for NDK!!";
+	char *str = (const char*) value;
+	strcat(str, ndk);
+	FREObject retStr;
     FRENewObjectFromUTF8(strlen(str)+1, (const uint8_t *)str, &retStr);
     return retStr;
 }

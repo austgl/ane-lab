@@ -8,14 +8,15 @@
 			protected function button1_clickHandler(event:MouseEvent):void
 			{
 				var ane:HelloNdkExtensionContext = new HelloNdkExtensionContext();
-				result.text = ane.helloNDK();
+				result.text = ane.helloNDK(inputData.text);
 			}
 		]]>
 	</fx:Script>
 
-	<s:layout>
-		<s:VerticalLayout />
-	</s:layout>
-	<s:Label id="result" />
-	<s:Button label="Call Native" click="button1_clickHandler(event)"/>
+	<s:VGroup paddingBottom="6" paddingLeft="6" paddingRight="6" paddingTop="6">
+		<s:TextInput id="inputData" />
+		<s:Label id="result" />
+		<s:Button label="Call Native" click="button1_clickHandler(event)"
+				  enabled="{inputData.text.length > 0}"/>
+	</s:VGroup>
 </s:View>
