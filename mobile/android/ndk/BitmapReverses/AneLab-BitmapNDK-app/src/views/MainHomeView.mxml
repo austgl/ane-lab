@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark" title="HomeView">
+
+	<fx:Script>
+		<![CDATA[
+			import com.example.anelab.ndk.bitmap.extension.context.AneLabNDKExtensionContext;
+
+			protected function button1_clickHandler(from:uint = 0, to:uint = 50):void
+			{
+				var c:AneLabNDKExtensionContext = new AneLabNDKExtensionContext();
+				var message:String = "";
+				for (var i:int = from; i < to; i++) {
+					var bmpData:BitmapData = this["bmpImg" + i].bitmapData;
+					message = c.reverses(bmpData);
+					this["bmpImg" + i].source = c.bmpData;
+				}
+				result.text = message;
+			}
+		]]>
+	</fx:Script>
+
+	<fx:Declarations>
+		<!-- 非ビジュアルエレメント (サービス、値オブジェクトなど) をここに配置 -->
+	</fx:Declarations>
+
+	<s:VGroup paddingTop="6" paddingBottom="6" paddingLeft="6" paddingRight="6">
+		<s:Button label="access native" click="button1_clickHandler()" />
+		<s:Label id="result" />
+		<s:HGroup  paddingTop="6" paddingBottom="6" paddingLeft="6" paddingRight="6"
+				   click="button1_clickHandler(0, 9)">
+			<s:BitmapImage id="bmpImg0" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg1" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg2" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg3" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg4" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg5" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg6" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg7" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg8" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg9" source="@Embed(source='assets/logo.png')" />
+		</s:HGroup>
+		<s:HGroup  paddingTop="6" paddingBottom="6" paddingLeft="6" paddingRight="6"
+				   click="button1_clickHandler(10, 19)">
+			<s:BitmapImage id="bmpImg10" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg11" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg12" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg13" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg14" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg15" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg16" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg17" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg18" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg19" source="@Embed(source='assets/logo.png')" />
+		</s:HGroup>
+		<s:HGroup  paddingTop="6" paddingBottom="6" paddingLeft="6" paddingRight="6"
+				   click="button1_clickHandler(20, 29)">
+			<s:BitmapImage id="bmpImg20" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg21" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg22" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg23" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg24" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg25" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg26" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg27" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg28" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg29" source="@Embed(source='assets/logo.png')" />
+		</s:HGroup>
+		<s:HGroup  paddingTop="6" paddingBottom="6" paddingLeft="6" paddingRight="6"
+				   click="button1_clickHandler(30, 39)">
+			<s:BitmapImage id="bmpImg30" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg31" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg32" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg33" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg34" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg35" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg36" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg37" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg38" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg39" source="@Embed(source='assets/logo.png')" />
+		</s:HGroup>
+		<s:HGroup  paddingTop="6" paddingBottom="6" paddingLeft="6" paddingRight="6"
+				   click="button1_clickHandler(40, 49)">
+			<s:BitmapImage id="bmpImg40" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg41" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg42" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg43" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg44" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg45" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg46" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg47" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg48" source="@Embed(source='assets/logo.png')" />
+			<s:BitmapImage id="bmpImg49" source="@Embed(source='assets/logo.png')" />
+		</s:HGroup>
+	</s:VGroup>
+</s:View>
