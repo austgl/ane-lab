@@ -2,6 +2,11 @@ package com.example.extension.context
 {
 	import flash.external.ExtensionContext;
 
+	/**
+	 * HelloNdkExtensionContext
+	 * @author @tokufxug http://twitter.com/tokufxug
+	 *
+	 */
 	public class HelloNdkExtensionContext
 	{
 		private var context:ExtensionContext;
