@@ -1,2 +1,0 @@
-set solib-search-path /Applications/eclipse3.7/workspace/AneLab-BitmapNDK-NDK/obj/local/armeabi
-directory /Users/tokuyamasadao/Android/android-ndk/platforms/android-3/arch-arm/usr/include external/include /Applications/eclipse3.7/workspace/AneLab-BitmapNDK-NDK/jni /Users/tokuyamasadao/Android/android-ndk/sources/cxx-stl/system
