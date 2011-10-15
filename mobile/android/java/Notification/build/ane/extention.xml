@@ -1,0 +1,13 @@
+<extension xmlns="http://ns.adobe.com/air/extension/2.5">
+    <id>jp.itoz.ane.notification</id>
+    <versionNumber>1.0.0</versionNumber>
+    <platforms>
+        <platform name="Android-ARM">
+            <applicationDeployment>
+                <nativeLibrary>notification.jar</nativeLibrary>
+                <initializer>jp.itoz.ane.notification.NotificationExtention</initializer>
+                <finalizer>jp.itoz.ane.notification.NotificationExtention</finalizer>
+            </applicationDeployment>
+        </platform>
+    </platforms>
+</extension>

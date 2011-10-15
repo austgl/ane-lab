@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding ="utf-8"?>
+<swc xmlns="http://www.adobe.com/flash/swccatalog/9">
+  <versions>
+    <swc version="1.2" />
+    <flex version="4.5.1" build="21328" minimumSupportedVersion="3.0.0" />
+  </versions>
+  <features>
+    <feature-script-deps />
+    <feature-files />
+  </features>
+  <libraries>
+    <library path="library.swf">
+      <script name="_d0028b12bcb378f0af75a79b6f5f5f50b6c1c316d199c318b8833504f1db8ba0_flash_display_Sprite" mod="1317227660652" signatureChecksum="2238216825" >
+        <def id="_d0028b12bcb378f0af75a79b6f5f5f50b6c1c316d199c318b8833504f1db8ba0_flash_display_Sprite" /> 
+        <dep id="flash.system:Security" type="e" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="flash.display:Sprite" type="i" /> 
+      </script>
+      <script name="NotificationInterface" mod="1317227625000" signatureChecksum="3520279836" >
+        <def id="NotificationInterface" /> 
+        <dep id="flash.external:ExtensionContext" type="e" /> 
+        <dep id="flash.external:ExtensionContext" type="s" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <digests>
+        <digest type="SHA-256" signed="false" value="2223aa8eee9c401df1ad11b6f4285842d974f4b90e102d6e25bef479513ca95b"   />
+      </digests>
+    </library>
+  </libraries>
+  <files>
+  </files>
+</swc>

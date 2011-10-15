@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="HelloWorldANE_AS" basedir="." default="build">
+<property file="build.properties" />
+	<target name="build">
+		
+		<echo message="****************************************************************" />
+		<echo message="Delete" />
+		<delete dir="./build" />
+		<mkdir dir="./build/ane/Android-ARM/res" />
+		<delete file="./${APP_PROJECT}-app.xml" />
+		<delete file="./${APP_PROJECT}.swf" />
+		<delete file="./build/ane/${ANE_NAME}.ane" />
+		
+		<echo message="****************************************************************" />
+		<echo message="Copy resoureces" />
+		<copy todir="./build/ane/Android-ARM/res">
+    		<fileset dir="${NATIVE_FOLDER}/res" />
+  		</copy>
+  		
+  		<echo message="****************************************************************" />
+  		<echo message="Create jar" />
+  		<jar destfile="./build/ane/Android-ARM/${JAR_NAME}.jar">
+  			<fileset dir="./build/ane/Android-ARM/res" />
+  			<fileset dir="${NATIVE_FOLDER}/bin"/>
+  		</jar>
+  		
+  		<echo message="****************************************************************" />
+  		<echo message="Copy swc and xml" />
+  		<copy todir="./build/ane" >
+    		<fileset file="${LIB_FOLDER}/src/extention.xml" />
+    		<fileset file = "${LIB_FOLDER}/bin/${SWC_NAME}.swc" />
+  		</copy>
+  		
+  		<echo message="****************************************************************" />
+  		<echo message="Unzip swc" />
+  		<unzip src="./build/ane/${SWC_NAME}.swc"
+       				dest="./build/ane/" />
+       				
+       	<echo message="****************************************************************" />		
+       	<echo message="Move library.swf" />
+       	<move file="./build/ane/library.swf" 
+       				todir="./build/ane/Android-ARM" />
+       				
+  		<echo message="****************************************************************" />
+  		<echo message="Createing ANE Pacakge …" />
+  		<java jar="${ADT}" fork="true" failonerror="true">
+  			<arg value="-package" />
+			<arg value="-storetype" />
+			<arg value="pkcs12" />
+			<arg value="-keystore" />
+			<arg value="${CERTIFICATE}" />
+			<arg value="-storepass" />
+			<arg value="${CERTIFICATE.PW}" />
+			
+			<arg value="-target" />
+			<arg value="ane" />
+			<arg value="./build/ane/${ANE_NAME}.ane" />
+			<arg value="./build/ane/extention.xml" />
+			
+			<arg value="-swc" />
+			<arg value="./build/ane/${SWC_NAME}.swc" />
+			
+			<arg value="-platform" />
+			<arg value="Android-ARM" />
+			<arg value="-C" />
+			<arg value="./build/ane/Android-ARM" />
+			<arg value="." />
+  		</java>
+  		<echo message="[ANE Create Complete]" />
+  		
+  		<echo message="****************************************************************" />
+  		<echo message="Delete APK" />
+		<delete file="./${APK_NAME}.apk" />
+		
+		<echo message="****************************************************************" />
+		<echo message="Copy swf and xml" />
+		<copy todir="./" file="${APP_FOLDER}/bin/${APP_PROJECT}-app.xml" />
+    	<copy todir="./" file="${APP_FOLDER}/bin/${APP_PROJECT}.swf" />
+    	
+		<echo message="****************************************************************" />
+		<echo message="Createing APK Pacakge… " />
+  		<java jar="${ADT}" fork="true">
+  			<arg value="-package" />
+  			<arg value="-target" />
+			<arg value="apk-debug" />
+			
+			<arg value="-storetype" />
+			<arg value="pkcs12" />
+			<arg value="-keystore" />
+			<arg value="${CERTIFICATE}" />
+			<arg value="-storepass" />
+			<arg value="${CERTIFICATE.PW}" />
+  		
+  			<arg value="./${APK_NAME}.apk" />
+			<arg value="./${APP_PROJECT}-app.xml" />
+			<arg value="./${APP_PROJECT}.swf" />
+			<arg value="-extdir" />
+			<arg value="./build/ane/" />
+  		</java>
+  		<echo message="> APK Create Complete" />
+  		
+  		<echo message="****************************************************************" />
+  		<echo message="Delete copy swf and xml" />
+		<delete file="./${APP_PROJECT}-app.xml" />
+		<delete file="./${APP_PROJECT}.swf" />
+		
+		
+		<echo message="****************************************************************" />
+  		<echo message="APK installnig..." />
+  		<exec executable="${ADB}" >
+  			<arg line="install -r ./${APK_NAME}.apk" />
+  		</exec>
+		<!---->	
+  			
+	</target>
+</project>
