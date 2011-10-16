@@ -45,9 +45,9 @@ public class HelloWorldFREExtension implements FREExtension {
 
 							Toast.makeText(
 									frecontext.getActivity(),
-									value, Toast.LENGTH_LONG).show();
+									"(" + value + ")", Toast.LENGTH_LONG).show();
 
-							ret = "call ->" + value;
+							ret = "Åy" + value + "Åz";
 						} catch (Exception e) {
 							ret = e.toString();
 						} finally {
