@@ -17,7 +17,7 @@ package com.example.ane.android.helloworld
 		}
 
 		public function helloworld(s:String):String {
-			return context.call("helloWorld", s) as String;
+			return ">>" + context.call("helloWorld", s) as String;
 		}
 	}
 }
