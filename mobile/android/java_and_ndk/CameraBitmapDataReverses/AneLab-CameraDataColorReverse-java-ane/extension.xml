@@ -1,0 +1,13 @@
+<extension xmlns="http://ns.adobe.com/air/extension/2.5">
+    <id>javaReverse</id>
+    <versionNumber>1.0.0</versionNumber>
+    <platforms>
+        <platform name="Android-ARM">
+        	<applicationDeployment>
+                <nativeLibrary>AneLab-CameraDataColorReverse-Java.jar</nativeLibrary>
+                <initializer>com.example.anelab.camera.bitmap.fre.extension.CameraDataColorReverseFREExtension</initializer>
+                <finalizer>com.example.anelab.camera.bitmap.fre.extension.CameraDataColorReverseFREExtension</finalizer>
+            </applicationDeployment>
+        </platform>
+    </platforms>
+</extension>
