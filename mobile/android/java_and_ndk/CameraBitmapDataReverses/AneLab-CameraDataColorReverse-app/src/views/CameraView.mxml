@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark" title="Camera BitmapData"
+		xmlns:mx="library://ns.adobe.com/flex/mx"
+		creationComplete="view1_creationCompleteHandler(event)">
+
+	<fx:Script>
+		<![CDATA[
+			import flash.utils.getTimer;
+			import mx.events.FlexEvent;
+			import com.example.anelab.camera.bitmap.extension.context.CameraDataColorReverseJava;
+			import com.example.anelab.camera.bitmap.extension.context.CameraDataColorReverseNDK;
+
+			private static var java:CameraDataColorReverseJava = new CameraDataColorReverseJava();
+			private static var ndk:CameraDataColorReverseNDK = new CameraDataColorReverseNDK();
+
+			protected function view1_creationCompleteHandler(event:FlexEvent):void
+			{
+				img.width = int(width * 0.8);
+				img.height = int(height * 0.8) ;
+
+				size.text = "width: " + img.width + ", height: " + img.height;
+
+				if (CameraUI.isSupported) {
+					var c:CameraUI = new CameraUI();
+					c.addEventListener(MediaEvent.COMPLETE,
+						onImageHandler);
+					c.launch(MediaType.IMAGE);
+				}
+			}
+
+			private function onImageHandler(event:MediaEvent):void {
+				var ip:MediaPromise = event.data;
+				var ldr:Loader = new Loader();
+				ldr.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoadHandler);
+				ldr.loadFilePromise(ip);
+			}
+
+			private function onImageLoadHandler(event:Event):void {
+				var bmp:Bitmap = event.target.content as Bitmap;
+				img.source = bmp.bitmapData;
+			}
+
+
+			protected function button_clickHandler(event:MouseEvent):void
+			{
+				var selecred:String = selectedItem.selectedValue as String;
+				var bmpData:BitmapData = img.bitmapData;
+				start();
+				switch (selecred) {
+					case "AIR":
+						air(bmpData);
+						message = "air reverse complete!";
+						break;
+					case "Java":
+						message = java.reverse(bmpData);
+						img.source = java.bmpData;
+						break;
+					case "C":
+						message = ndk.reverse(bmpData);
+						img.source = ndk.bmpData;
+						break;
+					case "ASM":
+						message = ndk.reverseAsm(bmpData);
+						img.source = ndk.bmpData;
+						break;
+				}
+				end();
+			}
+
+			protected function air(src:BitmapData):void
+			{
+				const w:uint = src.width;
+				const h:uint = src.height;
+				for (var i:uint = 0; i < w; i++) {
+					for (var j:uint = 0; j < h; j++) {
+						const c:uint = src.getPixel32(i, j) ^ 0x00ffffff;
+						src.setPixel32(i, j, c);
+					}
+				}
+				img.source = src;
+			}
+
+			[Bindable]
+			private var out:String = "";
+			[Bindable]
+			private var message:String = "";
+
+			private var t:int = 0;
+
+			private function start():void {
+				t = getTimer();
+			}
+
+			private function end():void {
+				t = getTimer() - t;
+				out = t + "ms";
+			}
+		]]>
+	</fx:Script>
+
+	<fx:Declarations>
+		<s:RadioButtonGroup id="selectedItem" />
+	</fx:Declarations>
+
+	<s:VGroup>
+		<s:HGroup id="editGroup">
+			<s:RadioButton label="AIR"
+						   group="{selectedItem}" value="AIR"
+						   selected="true"/>
+			<s:RadioButton label="Java"
+						   group="{selectedItem}" value="Java"/>
+			<s:RadioButton label="C"
+						   group="{selectedItem}" value="C"/>
+			<s:RadioButton label="Asm"
+						   group="{selectedItem}" value="ASM"/>
+			<s:Button id="btn" label="Reverse" click="button_clickHandler(event)" />
+		</s:HGroup>
+
+		<s:BitmapImage id="img" />
+		<s:Label id="size" />
+		<s:Label text="{message}" />
+		<s:Label text="{out}" />
+
+	</s:VGroup>
+</s:View>
