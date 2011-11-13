@@ -1,0 +1,2 @@
+set solib-search-path /Applications/eclipse3.7/workspace/AneLab-BitmapPlasma-NDK/obj/local/armeabi
+directory /Users/tokuyamasadao/Android/android-ndk/platforms/android-8/arch-arm/usr/include /Applications/eclipse3.7/workspace/AneLab-BitmapPlasma-NDK/jni /Users/tokuyamasadao/Android/android-ndk/sources/cxx-stl/system
