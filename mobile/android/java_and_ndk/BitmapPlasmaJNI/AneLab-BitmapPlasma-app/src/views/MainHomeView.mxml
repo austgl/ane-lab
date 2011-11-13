@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark" title="Plasma">
+	<fx:Script>
+		<![CDATA[
+
+			import com.example.ane.plasma.AneLabBitmapPlasmaExtensionContext;
+
+			private static const EC:AneLabBitmapPlasmaExtensionContext =
+				new AneLabBitmapPlasmaExtensionContext();
+
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+				var o:Object = EC.plasma();
+				if (o is BitmapData) {
+					bmp.source = o as BitmapData;
+				}
+			}
+		]]>
+	</fx:Script>
+
+	<s:layout>
+		<s:VerticalLayout />
+	</s:layout>
+
+	<s:BitmapImage id="bmp" />
+	<s:Button label="plasma" click="button1_clickHandler(event)"/>
+</s:View>
