@@ -1,0 +1,21 @@
+<extension xmlns="http://ns.adobe.com/air/extension/2.5">
+  <id>jp.hiiragi.ane.HelloWorldANE</id>
+  <versionNumber>0.0.1</versionNumber>
+  <copyright>Hiiragi</copyright>
+  <platforms>
+    <platform name="iPhone-ARM">
+      <applicationDeployment>
+        <nativeLibrary>libHelloWorldANE2.a</nativeLibrary>
+        <initializer>ExtInitializer</initializer>
+        <finalizer>ExtFinalizer</finalizer>
+      </applicationDeployment>
+    </platform>
+    <platform name="Android-ARM">
+      <applicationDeployment>
+        <nativeLibrary>HelloWorldANE.jar</nativeLibrary>
+        <initializer>jp.hiiragi.HelloWorldANE</initializer>
+        <finalizer>jp.hiiragi.HelloWorldANE</finalizer>
+      </applicationDeployment>
+    </platform>
+  </platforms>
+</extension>
