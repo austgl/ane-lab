@@ -1,0 +1,13 @@
+<extension xmlns="http://ns.adobe.com/air/extension/2.5">
+    <id>mail</id>
+    <versionNumber>1.0.0</versionNumber>
+    <platforms>
+        <platform name="Android-ARM">
+        	<applicationDeployment>
+                <nativeLibrary>AneLab-AndroidSendMail.jar</nativeLibrary>
+                <initializer>com.example.ane.mail.AneLabSendMailFREExtension</initializer>
+                <finalizer>com.example.ane.mail.AneLabSendMailFREExtension</finalizer>
+            </applicationDeployment>
+        </platform>
+    </platforms>
+</extension>
