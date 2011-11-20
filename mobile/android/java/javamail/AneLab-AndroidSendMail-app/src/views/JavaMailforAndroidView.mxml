@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		title="Java Mail for Android (Gmail)">
+	<fx:Script>
+		<![CDATA[
+
+			import com.example.ane.mail.*;
+
+			private static const MAIL:AneLabSendMailExtensionContext
+				= new AneLabSendMailExtensionContext();
+
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+				ret.text = "";
+				send.visible = false;
+
+				var account:AneLabGmailAccount = new AneLabGmailAccount();
+				account.account = gmail.text;
+				account.password = password.text;
+
+				var mail:AneLabSendMailObject = new AneLabSendMailObject();
+				mail.subject = subject.text;
+				mail.recipient = recipient.text;
+				mail.text = text.text;
+
+				send.visible = true;
+
+				ret.text = MAIL.send(account, mail);
+			}
+		]]>
+	</fx:Script>
+
+	<s:VGroup>
+		<s:HGroup>
+			<s:Label width="170" height="24" text="Subject"/>
+			<s:TextInput id="subject" width="300" height="50"/>
+		</s:HGroup>
+		<s:HGroup>
+			<s:Label width="170" height="20" text="Send Address"/>
+			<s:TextInput id="recipient" width="300" height="50"/>
+		</s:HGroup>
+
+		<s:HGroup>
+			<s:Label width="170" height="24" text="Message"/>
+			<s:TextArea id="text" width="300" height="150"/>
+		</s:HGroup>
+
+		<s:HGroup>
+			<s:Label width="170" height="24" text="Google Account" />
+			<s:TextInput id="gmail" width="300" height="50" text=""/>
+		</s:HGroup>
+
+		<s:HGroup>
+			<s:Label width="170" height="24" text="Password" />
+			<s:TextInput id="password" width="300" height="50"
+						 displayAsPassword="true" text=""/>
+		</s:HGroup>
+		<s:HGroup>
+			<s:Button id="send" label="SEND" click="button1_clickHandler(event)" />
+			<s:BusyIndicator visible="{!send.visible}" />
+		</s:HGroup>
+		<s:Label id="ret" />
+	</s:VGroup>
+
+</s:View>
