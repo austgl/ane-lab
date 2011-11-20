@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+  <project name="jarmarge" default="compile" basedir="./">
+
+  <property name="compile" value="libs"/>
+
+  <target name="directory">
+    <mkdir dir="${compile}"/>
+  </target>
+
+  <target name="compile" depends="directory">
+  	<jar destfile="AneLab-AndroidSendMail.jar" filesetmanifest="merge">
+  	  <zipgroupfileset dir="libs" includes="*.jar" />
+  	</jar>
+  </target>
+
+</project>
