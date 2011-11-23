@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark" title="IdmView"
+		preinitialize="view1_preinitializeHandler(event)"
+		updateComplete="view1_updateCompleteHandler(event)">
+	<fx:Declarations />
+	<fx:Script>
+		<![CDATA[
+			import com.example.nfc.idm.*;
+
+			import mx.events.FlexEvent;
+			private static const NFC:AneLabNfcIdmExtensionContext =
+				new AneLabNfcIdmExtensionContext();
+
+			private var error:String = "";
+			private var info:AneLabNfcInfo = null;
+
+			protected function view1_preinitializeHandler(event:FlexEvent):void
+			{
+				var result:Object = NFC.readIdm();
+				if (result is String) {
+					error = result as String;
+				} else if (result is AneLabNfcInfo) {
+					info = result as AneLabNfcInfo;
+				}
+			}
+
+			protected function view1_updateCompleteHandler(event:FlexEvent):void
+			{
+				err.text = error;
+				idm.text = info.idm;
+				pmm.text = info.pmm;
+				syscd.text = info.systemCode;
+			}
+		]]>
+	</fx:Script>
+
+	<s:layout>
+		<s:VerticalLayout />
+	</s:layout>
+	<s:HGroup width="180" paddingBottom="6" paddingLeft="6" paddingRight="6" paddingTop="6">
+		<s:Label width="60" text="IDM"/><s:Label id="idm" width="94"/>
+	</s:HGroup>
+	<s:HGroup width="180" paddingBottom="6" paddingLeft="6" paddingRight="6" paddingTop="6">
+		<s:Label width="60" text="PMM"/><s:Label id="pmm" width="95"/>
+	</s:HGroup>
+	<s:HGroup width="180" paddingBottom="6" paddingLeft="6" paddingRight="6" paddingTop="6">
+		<s:Label width="60" text="SYSCD"/><s:Label id="syscd" width="95"/>
+	</s:HGroup>
+	<s:HGroup width="180" paddingBottom="6" paddingLeft="6" paddingRight="6" paddingTop="6">
+		<s:Label id="err" width="165"/>
+	</s:HGroup>
+</s:View>
