@@ -1,0 +1,11 @@
+*ネットワーク状況変化（3G, Wi-Fi, 未接続）を通知するAir Native Extension(iOS用)*
+サンプルアプリ付き。
+
+*こちらのライブラリを使わさせて頂きました*
+"FBNetworkReachability":https://github.com/dev5tec/
+
+*解説*
+http://blog.romatica.com/2011/12/27/air_ane_ios_networkstatus/
+
+--
+@auther itoz ( www.romatica.com )
