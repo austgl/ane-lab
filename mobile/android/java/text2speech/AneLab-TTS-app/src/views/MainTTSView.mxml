@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark" title="TTSView"
+		creationComplete="view1_creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+
+			import so.ane.tts.event.TTSEvent;
+			import so.ane.tts.extension.TTSExtension;
+			private var _tts:TTSExtension = new TTSExtension();
+			protected function view1_creationCompleteHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				_tts.addEventListener(TTSEvent.CREATE_ERROR, onError);
+				_tts.addEventListener(TTSEvent.CREATE_SUCCESS, onSuccess);
+				_tts.addEventListener(TTSEvent.PLAY_COMPLETED, onSuccess);
+				_tts.create();
+				speakText.text = "２０１１年末に人々の財布や企業の金庫の中などに保有されたまま、年を越す日本銀行券（お札）の総額は、前年末より２％多い８３兆９９６８億円となり、２年連続で過去最高を更新した。日銀が３０日発表した。日銀が市場に多くのお金を供給する金融緩和策を拡大する一方で、一般家庭では、超低金利のため現金を銀行などに預けずに家で保管する「たんす預金」が増えているためとみられる。景気の先行きが不透明で、企業が急な出費に備え、手元に置くお金を増やしていることも理由のようだ。";
+			}
+
+			private function onError(event:TTSEvent):void {
+				speak.label = "TTS作成失敗";
+			}
+			private function onSuccess(event:TTSEvent):void {
+				speak.label = "音声変換";
+				speak.enabled = true;
+			}
+
+			private function onComplete(event:TTSEvent):void {
+				speak.label = "音声変換";
+				speak.enabled = true;
+			}
+
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+				var p:Number = Number(pitch.text);
+				var s:Number = Number(speechRate.text);
+
+				speak.label = "再生処理中";
+				speak.enabled = false;
+				_tts.speak(speakText.text, p, s);
+
+			}
+
+			protected function speak_clickHandler(event:MouseEvent):void
+			{
+				_tts.shutdown();
+
+			}
+
+			protected function button2_clickHandler(event:MouseEvent):void
+			{
+				speak.label = "音声変換";
+				speak.enabled = true;
+				_tts.stop();
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 非ビジュアルエレメント (サービス、値オブジェクトなど) をここに配置 -->
+	</fx:Declarations>
+	<s:HGroup>
+		<s:TextArea id="speakText" text="音声変換します。"/>
+		<s:VGroup>
+
+			<s:HGroup>
+				<s:Label text="pitch"/>
+				<s:TextInput id="pitch" text="1.0"/>
+			</s:HGroup>
+			<s:HGroup>
+				<s:Label text="rate"/>
+				<s:TextInput id="speechRate" text="1.0"/>
+			</s:HGroup>
+
+			<s:Button id="speak" label="準備中" click="button1_clickHandler(event)" enabled="false"/>
+			<s:Button label="音声stop" click="button2_clickHandler(event)"/>
+			<s:Button label="TTS終了" click="speak_clickHandler(event)"/>
+		</s:VGroup>
+	</s:HGroup>
+
+</s:View>
