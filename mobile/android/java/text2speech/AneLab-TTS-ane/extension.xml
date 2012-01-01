@@ -1,0 +1,13 @@
+<extension xmlns="http://ns.adobe.com/air/extension/2.5">
+    <id>so.ane.tts.TTS</id>
+    <versionNumber>1.0.0</versionNumber>
+    <platforms>
+        <platform name="Android-ARM">
+            <applicationDeployment>
+                <nativeLibrary>AneLab-TTS.jar</nativeLibrary>
+                <initializer>so.ane.tts.extension.TTSFREExtension</initializer>
+                <finalizer>so.ane.tts.extension.TTSFREExtension</finalizer>
+            </applicationDeployment>
+        </platform>
+    </platforms>
+</extension>
