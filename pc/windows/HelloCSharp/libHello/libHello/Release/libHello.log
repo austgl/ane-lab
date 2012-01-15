@@ -1,0 +1,38 @@
+﻿2012/01/15 21:33:49 にビルドを開始しました。
+     1>ノード 2 上のプロジェクト "c:\documents and settings\hoehoe\my documents\visual studio 2010\Projects\libHello\libHello\libHello.vcxproj" (build ターゲット)。
+     1>PrepareForBuild:
+         ディレクトリ "c:\documents and settings\hoehoe\my documents\visual studio 2010\Projects\libHello\Release\" を作成しています。
+       InitializeBuildStatus:
+         "AlwaysCreate" が指定されたため "Release\libHello.unsuccessfulbuild" を作成しています。
+       GenerateTargetFrameworkMonikerAttribute:
+       すべての出力ファイルが入力ファイルに対して最新なので、ターゲット "GenerateTargetFrameworkMonikerAttribute" を省略します。
+       ClCompile:
+         c:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /AI"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0" /Zi /clr /nologo /W3 /WX- /O2 /Oy- /D WIN32 /D NDEBUG /D _WINDLL /D _UNICODE /D UNICODE /EHa /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yc"StdAfx.h" /Fp"Release\libHello.pch" /Fo"Release\\" /Fd"Release\vc100.pdb" /TP /FU"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Core.dll" /FU"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Data.dll" /FU"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.dll" /FU"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Xml.dll" /analyze- /errorReport:prompt Stdafx.cpp /clr:nostdlib 
+         Stdafx.cpp
+         c:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /AI"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0" /Zi /clr /nologo /W3 /WX- /O2 /Oy- /D WIN32 /D NDEBUG /D _WINDLL /D _UNICODE /D UNICODE /EHa /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"StdAfx.h" /Fp"Release\libHello.pch" /Fo"Release\\" /Fd"Release\vc100.pdb" /TP /FU"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Core.dll" /FU"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Data.dll" /FU"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.dll" /FU"C:\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Xml.dll" /analyze- /errorReport:prompt AssemblyInfo.cpp libHello.cpp /clr:nostdlib 
+         AssemblyInfo.cpp
+         libHello.cpp
+         コードを生成中...
+         c:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /clr /nologo /W3 /WX- /O2 /Oy- /D WIN32 /D NDEBUG /D _WINDLL /D _UNICODE /D UNICODE /EHa /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc100.pdb" /TP /analyze- /errorReport:prompt "C:\Documents and Settings\hoehoe\Local Settings\Temp\.NETFramework,Version=v4.0.AssemblyAttributes.cpp"
+         .NETFramework,Version=v4.0.AssemblyAttributes.cpp
+       ResourceCompile:
+         C:\Program Files\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /D _UNICODE /D UNICODE /l"0x0409" /nologo /fo"Release\app.res" app.rc 
+       Link:
+         c:\Program Files\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"c:\documents and settings\hoehoe\my documents\visual studio 2010\Projects\libHello\Release\libHello.dll" /INCREMENTAL:NO /NOLOGO /MANIFEST /ManifestFile:"Release\libHello.dll.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"c:\documents and settings\hoehoe\my documents\visual studio 2010\Projects\libHello\Release\libHello.pdb" /TLBID:1 /DYNAMICBASE /FIXED:NO /NXCOMPAT /MACHINE:X86 /DLL Release\app.res
+         Release\AssemblyInfo.obj
+         Release\libHello.obj
+         Release\Stdafx.obj
+         "Release\.NETFramework,Version=v4.0.AssemblyAttributes.obj"
+         FlashRuntimeExtensions.lib
+            ライブラリ c:\documents and settings\hoehoe\my documents\visual studio 2010\Projects\libHello\Release\libHello.lib とオブジェクト c:\documents and settings\hoehoe\my documents\visual studio 2010\Projects\libHello\Release\libHello.exp を作成中
+         libHello.vcxproj -> c:\documents and settings\hoehoe\my documents\visual studio 2010\Projects\libHello\Release\libHello.dll
+       Manifest:
+         C:\Program Files\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"c:\documents and settings\hoehoe\my documents\visual studio 2010\Projects\libHello\Release\libHello.dll;#2" /manifest Release\libHello.dll.intermediate.manifest
+       FinalizeBuildStatus:
+         ファイル "Release\libHello.unsuccessfulbuild" を削除しています。
+         "Release\libHello.lastbuildstate" のタッチ タスクを実行しています。
+     1>プロジェクト "c:\documents and settings\hoehoe\my documents\visual studio 2010\Projects\libHello\libHello\libHello.vcxproj" (build ターゲット) のビルドが完了しました。
+
+ビルドに成功しました。
+
+経過時間 00:00:02.53

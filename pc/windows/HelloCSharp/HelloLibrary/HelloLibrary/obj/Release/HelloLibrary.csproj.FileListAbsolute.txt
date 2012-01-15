@@ -1,0 +1,4 @@
+C:\Documents and Settings\hoehoe\my documents\visual studio 2010\Projects\HelloLibrary\HelloLibrary\bin\Release\HelloLibrary.dll
+C:\Documents and Settings\hoehoe\my documents\visual studio 2010\Projects\HelloLibrary\HelloLibrary\obj\Release\ResolveAssemblyReference.cache
+C:\Documents and Settings\hoehoe\my documents\visual studio 2010\Projects\HelloLibrary\HelloLibrary\obj\Release\HelloLibrary.dll
+C:\Documents and Settings\hoehoe\my documents\visual studio 2010\Projects\HelloLibrary\HelloLibrary\bin\Release\HelloLibrary.tlb
