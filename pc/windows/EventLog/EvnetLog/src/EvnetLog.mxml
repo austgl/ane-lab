@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx" creationComplete="init();">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.chocbanana.win.EventLogExtension;
+			
+			import mx.controls.Alert;
+			
+			private var ane:com.chocbanana.win.EventLogExtension;
+			
+			[Bindable]
+			private var ar:ArrayCollection;
+			
+			private function init():void{
+				ane = new EventLogExtension();
+				cmb_enryName.selectedIndex = 0;
+			}
+			protected function btn_eventLog_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				var entryName:String = cmb_enryName.selectedItem as String;
+				var _ar:Array = ane.getEventLog(entryName);
+				
+				if(_ar == null || _ar.length == 0){
+					Alert.show("エラーの出ているEventはありません。");
+				}
+				ar = new ArrayCollection();
+				
+				for(var i:int=0; i<_ar.length; i++){
+					ar.addItem(_ar[i]);
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 非ビジュアルエレメント (サービス、値オブジェクトなど) をここに配置 -->
+	</fx:Declarations>
+	<s:Panel x="0" y="0" width="100%" height="100%">
+		<s:VGroup x="0" y="0" width="100%" height="100%" horizontalAlign="center"
+				  verticalAlign="middle">
+			<s:Spacer width="10" height="10"/>
+				<s:Label fontSize="15" fontStyle="normal" fontWeight="bold" text="EventLogの選択"/>
+				<s:ComboBox id="cmb_enryName">
+					<s:ArrayCollection>
+						<fx:String>Application</fx:String>
+						<fx:String>System</fx:String>
+					</s:ArrayCollection>
+				</s:ComboBox>
+			<s:DataGrid id="grid_log" width="90%" height="80%" requestedRowCount="4" dataProvider="{ar}">
+				<s:columns>
+					<s:ArrayList>
+						<s:GridColumn dataField="timeWritten" headerText="TimeWritten"></s:GridColumn>
+						<s:GridColumn dataField="eventID" headerText="EventID"></s:GridColumn>
+						<s:GridColumn dataField="source" headerText="Source"></s:GridColumn>
+					</s:ArrayList>
+				</s:columns>
+			</s:DataGrid>
+			<s:HGroup>
+				<s:Button id="btn_eventLog" width="150" label="イベントログの取得"
+						  click="btn_eventLog_clickHandler(event)"/>
+			</s:HGroup>
+			<s:Spacer width="10" height="10"/>
+		</s:VGroup>
+	</s:Panel>
+</s:WindowedApplication>
