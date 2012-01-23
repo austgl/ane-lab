@@ -1,0 +1,4 @@
+C:\Documents and Settings\hoehoe\my documents\visual studio 2010\Projects\OutlookExpress_CS\OutlookExpress_CS\obj\Release\ResolveAssemblyReference.cache
+C:\Documents and Settings\hoehoe\my documents\visual studio 2010\Projects\OutlookExpress_CS\OutlookExpress_CS\bin\Release\OutlookExpress_CS.dll
+C:\Documents and Settings\hoehoe\my documents\visual studio 2010\Projects\OutlookExpress_CS\OutlookExpress_CS\bin\Release\OutlookExpress_CS.tlb
+C:\Documents and Settings\hoehoe\my documents\visual studio 2010\Projects\OutlookExpress_CS\OutlookExpress_CS\obj\Release\OutlookExpress_CS.dll
