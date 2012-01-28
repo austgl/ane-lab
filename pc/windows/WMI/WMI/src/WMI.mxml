@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx" creationComplete="init()">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.chocbanana.win.Pc;
+			import com.chocbanana.win.WinANE;
+			
+			import mx.collections.ArrayCollection;
+			
+			[Bindable]
+			private var ar:ArrayCollection = new ArrayCollection();
+			private var ane:WinANE = new WinANE();
+			
+			public function init():void{
+				ane.addEventListener(StatusEvent.STATUS, runEvent);
+				this.btn_showParam.enabled = false;
+			}
+			public function runEvent(event:StatusEvent):void{
+				this.btn_showParam.enabled = true;
+			}
+			protected function btn_pcInfo_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				ane.Run();
+				this.btn_pcInfo.enabled = false;
+				//ane.dispatchEvent(new Event("runEvent"));
+			}
+			
+			protected function btn_showParam_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				var info:Pc = ane.getPcInfo();
+				ar.removeAll();
+				
+				ar.addItem("Computer: " + info.computerName);
+				ar.addItem("Domain: " + info.computerDomain);
+				ar.addItem("Model: " + info.computerModel);
+				ar.addItem("Role: " + info.computerRole);
+				ar.addItem("--------------------");
+				ar.addItem("OS: " + info.osName);
+				ar.addItem("Version: " + info.osVersion);
+				ar.addItem("--------------------");
+				ar.addItem("Total: " + info.C_Total);
+				ar.addItem("Used: " + info.C_Used);
+				ar.addItem("Free: " + info.C_Free);
+				ar.addItem("FreeP: " + info.C_FreePercent);
+				ar.addItem("--------------------");
+				ar.addItem("CPU: " + info.cpuInfo);
+				ar.addItem("Clock: " + info.cpuClock);
+				ar.addItem("--------------------");
+				ar.addItem("Memory: " + info.memoryTotal);
+				ar.addItem("--------------------");
+				ar.addItem("Account: " + info.logonAccount);
+				ar.addItem("LogonTime: " + info.logonTime);
+				
+				this.btn_showParam.enabled = false;
+				this.btn_pcInfo.enabled = true;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 非ビジュアルエレメント (サービス、値オブジェクトなど) をここに配置 -->
+	</fx:Declarations>
+	<s:Panel x="0" y="0" width="100%" height="100%">
+		<s:VGroup x="0" y="0" width="100%" height="100%" horizontalAlign="center"
+				  verticalAlign="middle">
+			<s:List id="lst_pcInfo" width="85%" height="80%" dataProvider="{ar}"></s:List>
+			<s:HGroup>
+				<s:Button id="btn_showParam" label="Show PC Parameter"
+						  click="btn_showParam_clickHandler(event)"/>
+				<s:Spacer width="50" height="10"/>
+				<s:Button id="btn_pcInfo" label="Get PC Infomation"
+						  click="btn_pcInfo_clickHandler(event)"/>
+			</s:HGroup>
+		</s:VGroup>
+	</s:Panel>
+</s:WindowedApplication>
