@@ -1,4 +1,0 @@
-C:\Documents and Settings\hoehoe\my documents\visual studio 2010\Projects\EventLog_CS\EventLog_CS\bin\Release\EventLog_CS.dll
-C:\Documents and Settings\hoehoe\my documents\visual studio 2010\Projects\EventLog_CS\EventLog_CS\bin\Release\EventLog_CS.tlb
-C:\Documents and Settings\hoehoe\my documents\visual studio 2010\Projects\EventLog_CS\EventLog_CS\obj\Release\ResolveAssemblyReference.cache
-C:\Documents and Settings\hoehoe\my documents\visual studio 2010\Projects\EventLog_CS\EventLog_CS\obj\Release\EventLog_CS.dll

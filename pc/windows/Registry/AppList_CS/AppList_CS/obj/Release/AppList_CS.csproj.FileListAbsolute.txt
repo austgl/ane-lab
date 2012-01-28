@@ -1,4 +1,0 @@
-C:\Documents and Settings\hoehoe\my documents\visual studio 2010\Projects\AppList_CS\AppList_CS\bin\Release\AppList_CS.dll
-C:\Documents and Settings\hoehoe\my documents\visual studio 2010\Projects\AppList_CS\AppList_CS\obj\Release\ResolveAssemblyReference.cache
-C:\Documents and Settings\hoehoe\my documents\visual studio 2010\Projects\AppList_CS\AppList_CS\obj\Release\AppList_CS.dll
-C:\Documents and Settings\hoehoe\my documents\visual studio 2010\Projects\AppList_CS\AppList_CS\bin\Release\AppList_CS.tlb

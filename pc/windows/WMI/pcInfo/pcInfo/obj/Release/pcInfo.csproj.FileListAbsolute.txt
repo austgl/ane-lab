@@ -1,4 +1,0 @@
-C:\Documents and Settings\hoehoe\my documents\visual studio 2010\Projects\pcInfo\pcInfo\obj\Release\ResolveAssemblyReference.cache
-C:\Documents and Settings\hoehoe\my documents\visual studio 2010\Projects\pcInfo\pcInfo\bin\Release\pcInfo.dll
-C:\Documents and Settings\hoehoe\my documents\visual studio 2010\Projects\pcInfo\pcInfo\obj\Release\pcInfo.dll
-C:\Documents and Settings\hoehoe\my documents\visual studio 2010\Projects\pcInfo\pcInfo\bin\Release\pcInfo.tlb
