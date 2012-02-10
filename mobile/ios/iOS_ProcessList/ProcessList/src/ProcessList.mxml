@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" applicationDPI="160">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.chocbanana.iphone.ProcessExtension;
+			import mx.collections.ArrayList;
+
+			[Bindable]
+			private var ar:ArrayList = new ArrayList();
+
+			private var ane:ProcessExtension = new ProcessExtension();
+			
+			protected function btn_getProcess_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				this.ar.removeAll();
+				try{
+					var _ar:Array = ane.getProcessList();
+					for(var i:int =0; i<_ar.length; i++){
+						this.ar.addItem(_ar[i]);
+					}
+				}catch(e:Error){
+					trace(e.message);
+					trace(e.getStackTrace());
+				}
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 非ビジュアルエレメント (サービス、値オブジェクトなど) をここに配置 -->
+	</fx:Declarations>
+	<s:VGroup x="0" y="0" width="100%" height="100%" horizontalAlign="center" verticalAlign="bottom">
+		<s:List id="lst_processList" width="100%" height="100%" dataProvider="{ar}"/>
+		<s:Button id="btn_getProcess" label="ボタン" click="btn_getProcess_clickHandler(event)"/>
+		<s:Spacer width="10" height="10"/>
+	</s:VGroup>
+</s:Application>

@@ -1,0 +1,254 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		BD7BAD8514D957960024E1E0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD7BAD8414D957960024E1E0 /* Foundation.framework */; };
+		BD7BAD8B14D957960024E1E0 /* ProcessListExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = BD7BAD8A14D957960024E1E0 /* ProcessListExtension.m */; };
+		BD7BAD9214D957C50024E1E0 /* Adobe AIR.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD7BAD9114D957C50024E1E0 /* Adobe AIR.framework */; };
+		BDB2128A14E3EDF700EBA310 /* InstalledApplicationPlist.h in Headers */ = {isa = PBXBuildFile; fileRef = BDB2128814E3EDF700EBA310 /* InstalledApplicationPlist.h */; };
+		BDB2128B14E3EDF700EBA310 /* InstalledApplicationPlist.m in Sources */ = {isa = PBXBuildFile; fileRef = BDB2128914E3EDF700EBA310 /* InstalledApplicationPlist.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		BD7BAD8114D957960024E1E0 /* libProcessListExtension.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libProcessListExtension.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		BD7BAD8414D957960024E1E0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		BD7BAD8814D957960024E1E0 /* ProcessListExtension-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ProcessListExtension-Prefix.pch"; sourceTree = "<group>"; };
+		BD7BAD8914D957960024E1E0 /* ProcessListExtension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ProcessListExtension.h; sourceTree = "<group>"; };
+		BD7BAD8A14D957960024E1E0 /* ProcessListExtension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ProcessListExtension.m; sourceTree = "<group>"; };
+		BD7BAD9114D957C50024E1E0 /* Adobe AIR.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "Adobe AIR.framework"; path = "../../../../../Applications/Adobe Flash Builder 4.6/sdks/4.6.0/runtimes/air/mac/Adobe AIR.framework"; sourceTree = "<group>"; };
+		BDB2128814E3EDF700EBA310 /* InstalledApplicationPlist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InstalledApplicationPlist.h; sourceTree = "<group>"; };
+		BDB2128914E3EDF700EBA310 /* InstalledApplicationPlist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InstalledApplicationPlist.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		BD7BAD7E14D957960024E1E0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BD7BAD8514D957960024E1E0 /* Foundation.framework in Frameworks */,
+				BD7BAD9214D957C50024E1E0 /* Adobe AIR.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		BD7BAD7614D957960024E1E0 = {
+			isa = PBXGroup;
+			children = (
+				BD7BAD8614D957960024E1E0 /* ProcessListExtension */,
+				BD7BAD8314D957960024E1E0 /* Frameworks */,
+				BD7BAD8214D957960024E1E0 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		BD7BAD8214D957960024E1E0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BD7BAD8114D957960024E1E0 /* libProcessListExtension.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BD7BAD8314D957960024E1E0 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BD7BAD9114D957C50024E1E0 /* Adobe AIR.framework */,
+				BD7BAD8414D957960024E1E0 /* Foundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		BD7BAD8614D957960024E1E0 /* ProcessListExtension */ = {
+			isa = PBXGroup;
+			children = (
+				BD7BAD8914D957960024E1E0 /* ProcessListExtension.h */,
+				BD7BAD8A14D957960024E1E0 /* ProcessListExtension.m */,
+				BD7BAD8714D957960024E1E0 /* Supporting Files */,
+				BDB2128814E3EDF700EBA310 /* InstalledApplicationPlist.h */,
+				BDB2128914E3EDF700EBA310 /* InstalledApplicationPlist.m */,
+			);
+			path = ProcessListExtension;
+			sourceTree = "<group>";
+		};
+		BD7BAD8714D957960024E1E0 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				BD7BAD8814D957960024E1E0 /* ProcessListExtension-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		BD7BAD7F14D957960024E1E0 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BDB2128A14E3EDF700EBA310 /* InstalledApplicationPlist.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		BD7BAD8014D957960024E1E0 /* ProcessListExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BD7BAD8E14D957960024E1E0 /* Build configuration list for PBXNativeTarget "ProcessListExtension" */;
+			buildPhases = (
+				BD7BAD7D14D957960024E1E0 /* Sources */,
+				BD7BAD7E14D957960024E1E0 /* Frameworks */,
+				BD7BAD7F14D957960024E1E0 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ProcessListExtension;
+			productName = ProcessListExtension;
+			productReference = BD7BAD8114D957960024E1E0 /* libProcessListExtension.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BD7BAD7814D957960024E1E0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
+			buildConfigurationList = BD7BAD7B14D957960024E1E0 /* Build configuration list for PBXProject "ProcessListExtension" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = BD7BAD7614D957960024E1E0;
+			productRefGroup = BD7BAD8214D957960024E1E0 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				BD7BAD8014D957960024E1E0 /* ProcessListExtension */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BD7BAD7D14D957960024E1E0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BD7BAD8B14D957960024E1E0 /* ProcessListExtension.m in Sources */,
+				BDB2128B14E3EDF700EBA310 /* InstalledApplicationPlist.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		BD7BAD8C14D957960024E1E0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		BD7BAD8D14D957960024E1E0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		BD7BAD8F14D957960024E1E0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_TEMP_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
+				DSTROOT = /tmp/ProcessListExtension.dst;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SYSTEM_APPS_DIR)/Adobe Flash Builder 4.6/sdks/4.6.0/runtimes/air/mac\"",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "ProcessListExtension/ProcessListExtension-Prefix.pch";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		BD7BAD9014D957960024E1E0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_TEMP_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
+				DSTROOT = /tmp/ProcessListExtension.dst;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SYSTEM_APPS_DIR)/Adobe Flash Builder 4.6/sdks/4.6.0/runtimes/air/mac\"",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "ProcessListExtension/ProcessListExtension-Prefix.pch";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		BD7BAD7B14D957960024E1E0 /* Build configuration list for PBXProject "ProcessListExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BD7BAD8C14D957960024E1E0 /* Debug */,
+				BD7BAD8D14D957960024E1E0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BD7BAD8E14D957960024E1E0 /* Build configuration list for PBXNativeTarget "ProcessListExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BD7BAD8F14D957960024E1E0 /* Debug */,
+				BD7BAD9014D957960024E1E0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BD7BAD7814D957960024E1E0 /* Project object */;
+}
