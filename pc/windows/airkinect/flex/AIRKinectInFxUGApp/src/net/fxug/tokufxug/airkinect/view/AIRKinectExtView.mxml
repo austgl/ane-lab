@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="1024" height="768"
+		 creationComplete=" creatonCompleteHandler();;">
+	<fx:Script>
+		<![CDATA[
+			import com.as3nui.airkinect.extended.manager.AIRKinectManager;
+			import com.as3nui.airkinect.extended.manager.skeleton.ExtendedSkeleton;
+			import com.as3nui.nativeExtensions.kinect.AIRKinect;
+			import com.as3nui.nativeExtensions.kinect.data.AIRKinectSkeleton;
+			import com.as3nui.nativeExtensions.kinect.data.AIRKinectSkeletonFrame;
+			import com.as3nui.nativeExtensions.kinect.data.AIRKinectSkeletonJoint;
+			import com.as3nui.nativeExtensions.kinect.events.CameraFrameEvent;
+			import com.as3nui.nativeExtensions.kinect.events.SkeletonFrameEvent;
+			import com.as3nui.nativeExtensions.kinect.settings.AIRKinectCameraResolutions;
+			import com.as3nui.nativeExtensions.kinect.settings.AIRKinectFlags;
+			import com.as3nui.nativeExtensions.kinect.settings.AIRKinectTransformSmoothParameters;
+
+			import mx.events.FlexEvent;
+
+			[Embed(source="/../assets/tokufxug_icon.png")]
+			private static const TOKUFXUG_ICON:Class;
+
+			private static var face:Bitmap = new TOKUFXUG_ICON() as Bitmap;
+
+			private var _activeSkeleton:ExtendedSkeleton;
+
+			private static const KINECT_MAX_DEPTHIN_FLASH:uint = 0;
+			private var _scaler:Vector3D;
+			private static var bg:Bitmap = new Bitmap();
+
+			// RGBカメラ, 近赤外線カメラ, 骨格追跡を使用する初期化フラグ
+			private static const CLR_DPTH_SKLTN:uint =
+				AIRKinectFlags.NUI_INITIALIZE_FLAG_USES_COLOR |
+				AIRKinectFlags.NUI_INITIALIZE_FLAG_USES_DEPTH |
+				AIRKinectFlags.NUI_INITIALIZE_FLAG_USES_SKELETON;
+
+			private function creatonCompleteHandler():void {
+				_scaler = new Vector3D(
+					skeletonStage.width, skeletonStage.height, KINECT_MAX_DEPTHIN_FLASH)
+				skeletonStage.graphics.beginFill(0x000000);
+				skeletonStage.graphics.drawRect(0, 0, skeletonStage.width, skeletonStage.height);
+				skeletonStage.graphics.endFill();
+				face.width = face.width * 1.75;
+				face.height = face.height * 1.75;
+
+			}
+			protected function start_clickHandler(event:MouseEvent):void
+			{
+				// フラグ未設定なら骨格追跡のみ
+				// RGB解像度未設定なら６４０ｘ４８０
+				// 近赤外線未設定ならは３２０ｘ２４０
+				// https://github.com/AS3NUI/airkinect-1-core/blob/master/src/com/as3nui/nativeExtensions/kinect/AIRKinect.as
+				var isInit:Boolean = AIRKinectManager.initialize(CLR_DPTH_SKLTN);
+
+				if (isInit) {
+					message.text = "Kinectセンサーに接続しました。";
+					btnSmoothing.visible =
+						nmrcCorrection.visible =
+						nmrcSmoothing.visible =
+						nmrcPrediction.visible =
+						nmrcJitterRadius.visible =
+						nmrcMaxDeviationRadius.visible = nmrcStprAngle.visible = btnSetAngle.visible = down.visible = true;
+					rgbCamera.width = 320;
+					rgbCamera.height = 240;
+					nmrcStprAngle.value = AIRKinect.getKinectAngle() as Number;
+
+					var sm:AIRKinectTransformSmoothParameters = AIRKinect.getTransformSmoothingParameters();
+					if (!sm) {
+						sm = new AIRKinectTransformSmoothParameters();
+					}
+					nmrcCorrection.value = sm.fCorrection;
+					nmrcSmoothing.value = sm.fSmoothing;
+					nmrcPrediction.value = sm.fPrediction;
+					nmrcJitterRadius.value = sm.fJitterRadius;
+					nmrcMaxDeviationRadius.value = sm.fMaxDeviationRadius;
+
+					init();
+
+				} else {
+					message.text = "Kinectセンサーの接続に失敗しました。";
+				}
+				start.enabled = !isInit;
+			}
+
+			protected function down_clickHandler(event:MouseEvent):void
+			{
+				//AIRKinect.removeEventListener(CameraFrameEvent.RGB, onRGBCameraEventHandler);
+				//AIRKinect.removeEventListener(CameraFrameEvent.DEPTH, onDepthCameraEventHandler);
+				//AIRKinect.removeEventListener(SkeletonFrameEvent.UPDATE, onSkeletonFrameEventHandler);
+				AIRKinectManager.shutdown();
+				rgbCamera.source = depthCamera.source = null;
+				while (skeletonStage.numChildren > 0) {
+					skeletonStage.removeChildAt(0);
+				}
+				rgbCamera.width = 0;
+				rgbCamera.height = 0;
+				start.enabled = true;
+				btnSmoothing.visible =
+					nmrcCorrection.visible =
+					nmrcSmoothing.visible =
+					nmrcPrediction.visible =
+					nmrcJitterRadius.visible =
+					nmrcMaxDeviationRadius.visible =
+					nmrcStprAngle.visible = btnSetAngle.visible = down.visible = false;
+				message.text = "Kinectセンサーの接続終了しました。";
+			}
+
+			private function init():void {
+				// RGBカメラのイベント取得
+				//AIRKinect.addEventListener(CameraFrameEvent.RGB, onRGBCameraEventHandler);
+				//AIRKinect.addEventListener(CameraFrameEvent.DEPTH, onDepthCameraEventHandler);
+				//AIRKinect.addEventListener(SkeletonFrameEvent.UPDATE, onSkeletonFrameEventHandler);
+
+				// 骨格イベント初期化
+				AIRKinectManager.onSkeletonAdded.add(addSkeleton);
+				AIRKinectManager.onSkeletonRemoved.add(onSkeletonRemoved);
+				// Kinect接続イベント初期化
+				AIRKinectManager.onKinectReconnected.add(start_clickHandler);
+				AIRKinectManager.onKinectDisconnected.add(down_clickHandler);
+				// RGBカメライベント初期化
+				AIRKinectManager.onRGBFrameUpdate.add(onRGBCameraEventHandler);
+				AIRKinectManager.onDepthFrameUpdate.add(onDepthCameraEventHandler);
+				skeletonStage.addEventListener(Event.ENTER_FRAME, onEnterFrame);
+
+			}
+
+			private function onEnterFrame(event:Event):void {
+				drawSkeletons();
+			}
+
+			private function onRGBCameraEventHandler(data:BitmapData):void {
+				rgbCamera.source = data;
+			}
+
+			private function onDepthCameraEventHandler(bmpData:BitmapData, byteArray:ByteArray):void {
+				depthCamera.source = bmpData;
+			}
+
+			private function addSkeleton(
+				extSkt:ExtendedSkeleton):void {
+				if (!_activeSkeleton) {
+					_activeSkeleton = extSkt;
+				}
+				//drawSkeletons();
+			}
+
+			private function onSkeletonRemoved(skeleton:ExtendedSkeleton):void {
+				if (_activeSkeleton == skeleton) {
+					deactivateSkeleton();
+					if (AIRKinectManager.numSkeletons() > 0) {
+						addSkeleton(AIRKinectManager.getNextSkeleton());
+					}
+				}
+			}
+
+			private function deactivateSkeleton():void {
+				_activeSkeleton = null;
+			}
+
+			private function drawSkeletons():void {
+
+				if (!_activeSkeleton) {
+					return;
+				}
+				while (skeletonStage.numChildren > 0) {
+					skeletonStage.removeChildAt(0);
+				}
+				var joint:AIRKinectSkeletonJoint;
+
+				const jointLen:uint = _activeSkeleton.numJoints;
+
+				bg.bitmapData = rgbCamera.bitmapData;
+				skeletonStage.addChild(bg);
+
+				for (var j:uint = 0; j < jointLen; j++) {
+					joint = _activeSkeleton.getJointScaled(j, _scaler);
+					if (j == AIRKinectSkeleton.HEAD) {
+						face.x = joint.x - face.width / 2;
+						face.y = joint.y - face.height / 1.25;
+						face.z = joint.z;
+						skeletonStage.addChild(face);
+					} else {
+						//skeletonStage.addChild(gSkeletonJoint(joint));
+					}
+				}
+
+				var joint2Trace:Vector.<uint> = new <uint>[AIRKinectSkeleton.HAND_LEFT, AIRKinectSkeleton.HAND_RIGHT];
+				const l:uint = _activeSkeleton.skeletonHistory.length;
+				for (var i:uint = 0; i < l; i++) {
+					for each(var jointID:uint in joint2Trace){
+						joint = _activeSkeleton.getPositionInHistory(jointID,i);
+
+						skeletonStage.addChild(gHistorySkeletonJoint(joint, i, l));
+						//Maps 3d Position into 2d Space
+						//					var convertedPosition:Point = _skeletonsSprite.local3DToGlobal(new Vector3D(joint.x,  joint.y,  joint.z));
+						//					_historySprite.graphics.drawCircle(convertedPosition.x,  convertedPosition.y,  timeRatio * 15);
+					}
+				}
+
+
+//					var ANKLE_LEFT:AIRKinectSkeletonJoint = _activeSkeleton.getJointScaled(AIRKinectSkeleton.ANKLE_LEFT, _scaler);
+//					var ANKLE_RIGHT:AIRKinectSkeletonJoint = _activeSkeleton.getJointScaled(AIRKinectSkeleton.ANKLE_RIGHT, _scaler);
+//					var ELBOW_LEFT:AIRKinectSkeletonJoint = _activeSkeleton.getJointScaled(AIRKinectSkeleton.ELBOW_LEFT, _scaler);
+//					var ELBOW_RIGHT:AIRKinectSkeletonJoint = _activeSkeleton.getJointScaled(AIRKinectSkeleton.ELBOW_RIGHT, _scaler);
+//					var FOOT_LEFT:AIRKinectSkeletonJoint = _activeSkeleton.getJointScaled(AIRKinectSkeleton.FOOT_LEFT, _scaler);
+//					var FOOT_RIGHT:AIRKinectSkeletonJoint = _activeSkeleton.getJointScaled(AIRKinectSkeleton.FOOT_RIGHT, _scaler);
+//					var HAND_LEFT:AIRKinectSkeletonJoint = _activeSkeleton.getJointScaled(AIRKinectSkeleton.HAND_LEFT, _scaler);
+//					var HAND_RIGHT:AIRKinectSkeletonJoint = _activeSkeleton.getJointScaled(AIRKinectSkeleton.HAND_RIGHT, _scaler);
+//					var HEAD:AIRKinectSkeletonJoint = _activeSkeleton.getJointScaled(AIRKinectSkeleton.HEAD, _scaler);
+//					var HIP_CENTER:AIRKinectSkeletonJoint = _activeSkeleton.getJointScaled(AIRKinectSkeleton.HIP_CENTER, _scaler);
+//					var HIP_LEFT:AIRKinectSkeletonJoint = _activeSkeleton.getJointScaled(AIRKinectSkeleton.HIP_LEFT, _scaler);
+//					var HIP_RIGHT:AIRKinectSkeletonJoint = _activeSkeleton.getJointScaled(AIRKinectSkeleton.HIP_RIGHT, _scaler);
+//					var KNEE_LEFT:AIRKinectSkeletonJoint = _activeSkeleton.getJointScaled(AIRKinectSkeleton.KNEE_LEFT, _scaler);
+//					var KNEE_RIGHT:AIRKinectSkeletonJoint = _activeSkeleton.getJointScaled(AIRKinectSkeleton.KNEE_RIGHT, _scaler);
+//					var SHOULDER_CENTER:AIRKinectSkeletonJoint = _activeSkeleton.getJointScaled(AIRKinectSkeleton.SHOULDER_CENTER, _scaler);
+//					var SHOULDER_LEFT:AIRKinectSkeletonJoint = _activeSkeleton.getJointScaled(AIRKinectSkeleton.SHOULDER_LEFT, _scaler);
+//					var SHOULDER_RIGHT:AIRKinectSkeletonJoint = _activeSkeleton.getJointScaled(AIRKinectSkeleton.SHOULDER_RIGHT, _scaler);
+//					var SPINE:AIRKinectSkeletonJoint = _activeSkeleton.getJointScaled(AIRKinectSkeleton.SPINE, _scaler);
+//					var WRIST_LEFT:AIRKinectSkeletonJoint = _activeSkeleton.getJointScaled(AIRKinectSkeleton.WRIST_LEFT, _scaler);
+//					var WRIST_RIGHT:AIRKinectSkeletonJoint = _activeSkeleton.getJointScaled(AIRKinectSkeleton.WRIST_RIGHT, _scaler);
+//
+//					skeletonStage.addChild(gSkeletonLine(HIP_CENTER, SPINE));
+//					skeletonStage.addChild(gSkeletonLine(SPINE, SHOULDER_CENTER));
+//					skeletonStage.addChild(gSkeletonLine(SHOULDER_CENTER, HEAD));
+//
+//					skeletonStage.addChild(gSkeletonLine(SHOULDER_CENTER, SHOULDER_LEFT));
+//					skeletonStage.addChild(gSkeletonLine(SHOULDER_LEFT, ELBOW_LEFT));
+//					skeletonStage.addChild(gSkeletonLine(ELBOW_LEFT, WRIST_LEFT));
+//					skeletonStage.addChild(gSkeletonLine(WRIST_LEFT, HAND_LEFT));
+//
+//					skeletonStage.addChild(gSkeletonLine(SHOULDER_CENTER, SHOULDER_RIGHT));
+//					skeletonStage.addChild(gSkeletonLine(SHOULDER_RIGHT, ELBOW_RIGHT));
+//					skeletonStage.addChild(gSkeletonLine(ELBOW_RIGHT, WRIST_RIGHT));
+//					skeletonStage.addChild(gSkeletonLine(WRIST_RIGHT, HAND_RIGHT));
+//
+//					skeletonStage.addChild(gSkeletonLine(HIP_CENTER, HIP_LEFT));
+//					skeletonStage.addChild(gSkeletonLine(HIP_LEFT, KNEE_LEFT));
+//					skeletonStage.addChild(gSkeletonLine(KNEE_LEFT, ANKLE_LEFT));
+//					skeletonStage.addChild(gSkeletonLine(ANKLE_LEFT, FOOT_LEFT));
+//
+//					skeletonStage.addChild(gSkeletonLine(HIP_CENTER, HIP_RIGHT));
+//					skeletonStage.addChild(gSkeletonLine(HIP_RIGHT, KNEE_RIGHT));
+//					skeletonStage.addChild(gSkeletonLine(KNEE_RIGHT, ANKLE_RIGHT));
+//					skeletonStage.addChild(gSkeletonLine(ANKLE_RIGHT, FOOT_RIGHT));
+			}
+
+			private function gSkeletonJoint(joint:AIRKinectSkeletonJoint):Shape {
+				var shape:Shape = new Shape();
+				shape.graphics.beginFill(0xff0000);
+				shape.graphics.drawCircle(0, 0, 8);
+				shape.x = joint.x - 8;
+				shape.y = joint.y;
+				shape.z = joint.z;
+				return shape;
+			}
+
+			private function gHistorySkeletonJoint(joint:AIRKinectSkeletonJoint,
+			index:uint, len:uint):Shape {
+				var shape:Shape = new Shape();
+
+				joint.x *= _scaler.x;
+				joint.y *= _scaler.y;
+				joint.z *= _scaler.z;
+
+				shape.x = joint.x - 8;
+				shape.y = joint.y;
+				shape.z = joint.z;
+
+				var timeRatio:Number =	Math.abs(1-(index / len));
+
+				shape.graphics.beginFill(0xffff00, timeRatio/2);
+				shape.graphics.drawCircle(0,  0,  timeRatio * 50);
+
+				return shape;
+			}
+
+
+
+			private function gSkeletonLine(
+				start:AIRKinectSkeletonJoint,end:AIRKinectSkeletonJoint):Shape {
+				var shape:Shape = new Shape();
+				shape.graphics.lineStyle(2, 0xffff00);
+				shape.graphics.moveTo(start.x, start.y);
+				shape.graphics.lineTo(end.x, end.y);
+				return shape;
+			}
+
+			protected function btnSetAngle_clickHandler(event:MouseEvent):void
+			{
+				AIRKinect.instance.setKinectAngle(nmrcStprAngle.value as int);
+
+			}
+
+			protected function btnSmoothing_clickHandler(event:MouseEvent):void {
+				var sm:AIRKinectTransformSmoothParameters =
+					new AIRKinectTransformSmoothParameters(
+						nmrcCorrection.value,
+						nmrcSmoothing.value,
+						nmrcPrediction.value,
+						nmrcJitterRadius.value,
+						nmrcMaxDeviationRadius.value);
+				AIRKinect.setTransformSmoothingParameters(sm);
+			}
+		]]>
+	</fx:Script>
+
+	<s:HGroup>
+		<s:VGroup paddingLeft="6" paddingRight="6" paddingTop="6" paddingBottom="6">
+			<s:Label id="message"  />
+
+			<s:BitmapImage id="rgbCamera" scaleX="-1" />
+			<s:BitmapImage id="depthCamera" scaleX="-1"/>
+			<s:HGroup>
+				<s:Button id="start" label="AIRKinect 開始!" click="start_clickHandler(event)"/>
+				<s:Button id="down" label="AIRKinect 終了!" click="down_clickHandler(event)" visible="false"/>
+				<s:NumericStepper id="nmrcStprAngle" minimum="-27" maximum="27" stepSize="2" value="0"
+								  visible="false"/>
+				<s:Button id="btnSetAngle" label="アングル設定" click="btnSetAngle_clickHandler(event)" visible="false"/>
+			</s:HGroup>
+			<s:NumericStepper id="nmrcCorrection" minimum="0.0" maximum="1.0" stepSize="0.01" toolTip="補正" visible="false"/>
+			<s:NumericStepper id="nmrcJitterRadius" minimum="0.0" maximum="1.0" stepSize="0.01" toolTip="ジッタ半径" visible="false"/>
+			<s:NumericStepper id="nmrcMaxDeviationRadius" minimum="0.0" maximum="1.0" stepSize="0.01" toolTip="最大の偏差半径" visible="false"/>
+			<s:NumericStepper id="nmrcPrediction" minimum="0.0" maximum="1.0" stepSize="0.01" toolTip="予測値" visible="false"/>
+			<s:NumericStepper id="nmrcSmoothing" minimum="0.0" maximum="1.0" stepSize="0.01" toolTip="スムージング" visible="false"/>
+			<s:Button id="btnSmoothing" label="スムージング設定" click="btnSetAngle_clickHandler(event)" visible="false"/>
+		</s:VGroup>
+
+		<mx:UIComponent id="skeletonStage" width="640" height="480" scaleX="-1" />
+	</s:HGroup>
+
+</s:Group>

@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="1024" height="768"
+		 creationComplete=" creatonCompleteHandler();">
+	<fx:Script>
+		<![CDATA[
+			import com.as3nui.airkinect.extended.manager.AIRKinectManager;
+			import com.as3nui.nativeExtensions.kinect.AIRKinect;
+			import com.as3nui.nativeExtensions.kinect.data.AIRKinectSkeleton;
+			import com.as3nui.nativeExtensions.kinect.data.AIRKinectSkeletonFrame;
+			import com.as3nui.nativeExtensions.kinect.data.AIRKinectSkeletonJoint;
+			import com.as3nui.nativeExtensions.kinect.events.CameraFrameEvent;
+			import com.as3nui.nativeExtensions.kinect.events.SkeletonFrameEvent;
+			import com.as3nui.nativeExtensions.kinect.settings.AIRKinectCameraResolutions;
+			import com.as3nui.nativeExtensions.kinect.settings.AIRKinectFlags;
+			import com.as3nui.nativeExtensions.kinect.settings.AIRKinectTransformSmoothParameters;
+
+			import mx.core.WindowedApplication;
+			import mx.events.FlexEvent;
+
+			import spark.components.VideoDisplay;
+
+			[Embed(source="/../assets/afr.png")]
+			private static const AFR:Class;
+
+			private static var afr:Bitmap = new AFR() as Bitmap;
+
+			private static const KINECT_MAX_DEPTHIN_FLASH:uint = 0;
+			private var _scaler:Vector3D;
+
+			// RGBカメラ, 近赤外線カメラ, 骨格追跡を使用する初期化フラグ
+			private static const CLR_DPTH_SKLTN:uint =
+				AIRKinectFlags.NUI_INITIALIZE_FLAG_USES_COLOR |
+				AIRKinectFlags.NUI_INITIALIZE_FLAG_USES_DEPTH_AND_PLAYER_INDEX |
+				AIRKinectFlags.NUI_INITIALIZE_FLAG_USES_SKELETON;
+
+			private function creatonCompleteHandler():void {
+
+
+				_scaler = new Vector3D(
+					skeletonStage.width, skeletonStage.height, KINECT_MAX_DEPTHIN_FLASH)
+				skeletonStage.graphics.drawRect(0, 0, skeletonStage.width, skeletonStage.height);
+				skeletonStage.graphics.endFill();
+				start_clickHandler(null);
+
+			}
+			protected function start_clickHandler(event:MouseEvent):void
+			{
+				AIRKinect.playerMaskEnabled = true;
+				// フラグ未設定なら骨格追跡のみ
+				// RGB解像度未設定なら６４０ｘ４８０
+				// 近赤外線未設定ならは３２０ｘ２４０
+				// https://github.com/AS3NUI/airkinect-1-core/blob/master/src/com/as3nui/nativeExtensions/kinect/AIRKinect.as
+				var isInit:Boolean = AIRKinect.initialize(CLR_DPTH_SKLTN,
+					AIRKinectCameraResolutions.NUI_IMAGE_RESOLUTION_640x480,
+					AIRKinectCameraResolutions.NUI_IMAGE_RESOLUTION_320x240);
+
+				if (isInit) {
+					message.text = "接続しました。";
+					titleCamera.visible =
+					titleDepthCamera.visible = down.visible = true;
+					skeletonGrp.visible = true;
+
+
+
+					rgbCamera.width = depthCamera.width = 320;
+					rgbCamera.height = depthCamera.height = 240;
+					nmrcStprAngle.value = AIRKinect.getKinectAngle() as Number;
+
+					init();
+
+				} else {
+					message.text = "接続に失敗しました。";
+				}
+				start.enabled = !isInit;
+			}
+
+			protected function down_clickHandler(event:MouseEvent):void
+			{
+				AIRKinect.removeEventListener(CameraFrameEvent.RGB, onRGBCameraEventHandler);
+				AIRKinect.removeEventListener(CameraFrameEvent.DEPTH, onDepthCameraEventHandler);
+				AIRKinect.removeEventListener(SkeletonFrameEvent.UPDATE, onSkeletonFrameEventHandler);
+				AIRKinect.shutdown();
+				rgbCamera.source = depthCamera.source = null;
+				while (skeletonStage.numChildren > 0) {
+					skeletonStage.removeChildAt(0);
+				}
+				rgbCamera.width = 0;
+				rgbCamera.height = 0;
+				start.enabled = true;
+				titleCamera.visible =
+					titleDepthCamera.visible = down.visible = false;
+				skeletonGrp.visible = false;
+				message.text = "接続終了しました。";
+				var p:AIRKinectInFxUGApp = parentApplication as AIRKinectInFxUGApp;
+				p.currentState = "gesture";
+			}
+
+			private function init():void {
+				// RGBカメラのイベント取得
+				AIRKinect.addEventListener(CameraFrameEvent.PLAYER_MASK, onRGBCameraEventHandler);
+				AIRKinect.addEventListener(CameraFrameEvent.DEPTH, onDepthCameraEventHandler);
+				AIRKinect.addEventListener(SkeletonFrameEvent.UPDATE, onSkeletonFrameEventHandler);
+			}
+
+			private function onRGBCameraEventHandler(event:CameraFrameEvent):void {
+				rgbCamera.source = event.frame;
+				_maskBmp.bitmapData = event.frame;
+			}
+
+			private function onDepthCameraEventHandler(event:CameraFrameEvent):void {
+				depthCamera.source = event.frame;
+			}
+
+			private var _skeletons:Vector.<AIRKinectSkeleton> = new Vector.<AIRKinectSkeleton>();;
+			private function onSkeletonFrameEventHandler(event:SkeletonFrameEvent):void {
+				_skeletons.length = 0;
+				addSkeleton(event.skeletonFrame, _skeletons);
+			}
+			private function addSkeleton(
+				frame:AIRKinectSkeletonFrame,
+				skeletons:Vector.<AIRKinectSkeleton>):void {
+
+				const count:uint = frame.numSkeletons;
+				if (count > 0) {
+					for (var i:uint = 0; i < count; i++) {
+						_skeletons.push(frame.getSkeleton(i));
+					}
+					drawSkeletons();
+				}
+			}
+
+			private static const _maskBmp:Bitmap = new Bitmap();
+			private function drawSkeletons():void {
+				if (!_skeletons) {
+					return;
+				}
+				while (skeletonStage.numChildren > 0) {
+					skeletonStage.removeChildAt(0);
+				}
+				var joint:AIRKinectSkeletonJoint;
+
+				const skeletonLen:uint = _skeletons.length;
+				var jointLen:uint = 0;
+
+				for (var i:uint = 0; i < skeletonLen; i++) {
+					var s:AIRKinectSkeleton = _skeletons[i];
+					jointLen = s.numJoints;
+					for (var j:uint = 0; j < jointLen; j++) {
+						joint = s.getJointScaled(j, _scaler);
+						if (j == AIRKinectSkeleton.HEAD) {
+
+							afr.x = joint.x -  afr.width / 2;
+							afr.y = joint.y -  afr.height / 1.1
+							afr.z = joint.z;
+							skeletonStage.addChild( afr);
+						} else {
+							//skeletonStage.addChild(gSkeletonJoint(joint));
+						}
+					}
+
+////					var ANKLE_LEFT:AIRKinectSkeletonJoint = s.getJointScaled(AIRKinectSkeleton.ANKLE_LEFT, _scaler);
+////					var ANKLE_RIGHT:AIRKinectSkeletonJoint = s.getJointScaled(AIRKinectSkeleton.ANKLE_RIGHT, _scaler);
+////					var ELBOW_LEFT:AIRKinectSkeletonJoint = s.getJointScaled(AIRKinectSkeleton.ELBOW_LEFT, _scaler);
+////					var ELBOW_RIGHT:AIRKinectSkeletonJoint = s.getJointScaled(AIRKinectSkeleton.ELBOW_RIGHT, _scaler);
+////					var FOOT_LEFT:AIRKinectSkeletonJoint = s.getJointScaled(AIRKinectSkeleton.FOOT_LEFT, _scaler);
+////					var FOOT_RIGHT:AIRKinectSkeletonJoint = s.getJointScaled(AIRKinectSkeleton.FOOT_RIGHT, _scaler);
+////					var HAND_LEFT:AIRKinectSkeletonJoint = s.getJointScaled(AIRKinectSkeleton.HAND_LEFT, _scaler);
+////					var HAND_RIGHT:AIRKinectSkeletonJoint = s.getJointScaled(AIRKinectSkeleton.HAND_RIGHT, _scaler);
+////					var HEAD:AIRKinectSkeletonJoint = s.getJointScaled(AIRKinectSkeleton.HEAD, _scaler);
+////					var HIP_CENTER:AIRKinectSkeletonJoint = s.getJointScaled(AIRKinectSkeleton.HIP_CENTER, _scaler);
+////					var HIP_LEFT:AIRKinectSkeletonJoint = s.getJointScaled(AIRKinectSkeleton.HIP_LEFT, _scaler);
+////					var HIP_RIGHT:AIRKinectSkeletonJoint = s.getJointScaled(AIRKinectSkeleton.HIP_RIGHT, _scaler);
+////					var KNEE_LEFT:AIRKinectSkeletonJoint = s.getJointScaled(AIRKinectSkeleton.KNEE_LEFT, _scaler);
+////					var KNEE_RIGHT:AIRKinectSkeletonJoint = s.getJointScaled(AIRKinectSkeleton.KNEE_RIGHT, _scaler);
+////					var SHOULDER_CENTER:AIRKinectSkeletonJoint = s.getJointScaled(AIRKinectSkeleton.SHOULDER_CENTER, _scaler);
+////					var SHOULDER_LEFT:AIRKinectSkeletonJoint = s.getJointScaled(AIRKinectSkeleton.SHOULDER_LEFT, _scaler);
+////					var SHOULDER_RIGHT:AIRKinectSkeletonJoint = s.getJointScaled(AIRKinectSkeleton.SHOULDER_RIGHT, _scaler);
+////					var SPINE:AIRKinectSkeletonJoint = s.getJointScaled(AIRKinectSkeleton.SPINE, _scaler);
+////					var WRIST_LEFT:AIRKinectSkeletonJoint = s.getJointScaled(AIRKinectSkeleton.WRIST_LEFT, _scaler);
+////					var WRIST_RIGHT:AIRKinectSkeletonJoint = s.getJointScaled(AIRKinectSkeleton.WRIST_RIGHT, _scaler);
+//
+//					skeletonStage.addChild(gSkeletonLine(HIP_CENTER, SPINE));
+//					skeletonStage.addChild(gSkeletonLine(SPINE, SHOULDER_CENTER));
+//					skeletonStage.addChild(gSkeletonLine(SHOULDER_CENTER, HEAD));
+//
+//					skeletonStage.addChild(gSkeletonLine(SHOULDER_CENTER, SHOULDER_LEFT));
+//					skeletonStage.addChild(gSkeletonLine(SHOULDER_LEFT, ELBOW_LEFT));
+//					skeletonStage.addChild(gSkeletonLine(ELBOW_LEFT, WRIST_LEFT));
+//					skeletonStage.addChild(gSkeletonLine(WRIST_LEFT, HAND_LEFT));
+//
+//					skeletonStage.addChild(gSkeletonLine(SHOULDER_CENTER, SHOULDER_RIGHT));
+//					skeletonStage.addChild(gSkeletonLine(SHOULDER_RIGHT, ELBOW_RIGHT));
+//					skeletonStage.addChild(gSkeletonLine(ELBOW_RIGHT, WRIST_RIGHT));
+//					skeletonStage.addChild(gSkeletonLine(WRIST_RIGHT, HAND_RIGHT));
+//
+//					skeletonStage.addChild(gSkeletonLine(HIP_CENTER, HIP_LEFT));
+//					skeletonStage.addChild(gSkeletonLine(HIP_LEFT, KNEE_LEFT));
+//					skeletonStage.addChild(gSkeletonLine(KNEE_LEFT, ANKLE_LEFT));
+//					skeletonStage.addChild(gSkeletonLine(ANKLE_LEFT, FOOT_LEFT));
+//
+//					skeletonStage.addChild(gSkeletonLine(HIP_CENTER, HIP_RIGHT));
+//					skeletonStage.addChild(gSkeletonLine(HIP_RIGHT, KNEE_RIGHT));
+//					skeletonStage.addChild(gSkeletonLine(KNEE_RIGHT, ANKLE_RIGHT));
+//					skeletonStage.addChild(gSkeletonLine(ANKLE_RIGHT, FOOT_RIGHT));
+				}
+				_maskBmp.width = 640;
+				_maskBmp.height = 480;
+
+				skeletonStage.addChild(_maskBmp);
+			}
+
+			private function gSkeletonJoint(joint:AIRKinectSkeletonJoint):Shape {
+				var shape:Shape = new Shape();
+				shape.graphics.beginFill(0xff0000);
+				shape.graphics.drawCircle(0, 0, 8);
+				shape.x = joint.x - 8;
+				shape.y = joint.y;
+				shape.z = joint.z;
+				return shape;
+			}
+
+			private function gSkeletonLine(
+				start:AIRKinectSkeletonJoint,end:AIRKinectSkeletonJoint):Shape {
+				var shape:Shape = new Shape();
+				shape.graphics.lineStyle(2, 0xffff00);
+				shape.graphics.moveTo(start.x, start.y);
+				shape.graphics.lineTo(end.x, end.y);
+				return shape;
+			}
+
+			protected function btnSetAngle_clickHandler(event:MouseEvent):void
+			{
+				AIRKinect.instance.setKinectAngle(nmrcStprAngle.value as int);
+
+			}
+		]]>
+	</fx:Script>
+
+	<s:HGroup>
+		<s:VGroup width="326" height="320" paddingBottom="2" paddingLeft="2" paddingRight="2"
+				  paddingTop="2">
+			<s:Label id="message" fontFamily="ＭＳ ゴシック" fontSize="32" fontWeight="bold" text="スタンバイ"/>
+
+			<s:Label id="titleCamera" visible="false" fontFamily="ＭＳ ゴシック" fontSize="32" fontWeight="bold"  text="カメラ"/>
+			<s:BitmapImage id="rgbCamera" scaleX="-1" />
+			<s:Label id="titleDepthCamera" visible="false" fontFamily="ＭＳ ゴシック" fontSize="32"
+					 fontWeight="bold" text="近赤外線カメラ"/>
+			<s:BitmapImage id="depthCamera" scaleX="-1"/>
+			<s:VGroup>
+				<s:Button id="start" width="320" label="開始"
+						  click="start_clickHandler(event)" fontFamily="ＭＳ ゴシック" fontSize="32"
+						  fontWeight="bold"/>
+				<s:Button id="down" width="320" label="次へ" click="down_clickHandler(event)"
+						  fontFamily="ＭＳ ゴシック" fontSize="32" fontWeight="bold" visible="false" />
+			</s:VGroup>
+		</s:VGroup>
+
+		<s:VGroup id="skeletonGrp" width="510" paddingBottom="6" paddingLeft="6" paddingRight="6" paddingTop="6"  visible="false">
+			<s:Label  fontFamily="ＭＳ ゴシック" fontSize="32" fontWeight="bold" text=""/>
+			<s:Label id="titleSkeleton" visible="false" fontFamily="ＭＳ ゴシック" fontSize="32"
+					 fontWeight="bold" text="骨格データ"/>
+			<s:Group>
+				<s:VideoDisplay source="C:/pleiades-e3.6-ultimate-jre_20110326/workspace/AIRKinectInFxUGApp/assets\River.flv" autoPlay="true" loop="true"/>
+				<mx:UIComponent id="skeletonStage" x="{skeletonStage.width}" width="640" height="480" scaleX="-1" />
+			</s:Group>
+			<s:HGroup>
+				<s:Button id="btnSetAngle" height="43" label="アングル設定"
+						  click="btnSetAngle_clickHandler(event)" fontFamily="ＭＳ ゴシック"
+						  fontSize="32" fontWeight="bold"/>
+				<s:NumericStepper id="nmrcStprAngle" width="174" fontFamily="ＭＳ ゴシック"
+								  fontSize="32" fontWeight="bold" maximum="27" minimum="-27"
+								  stepSize="2" value="0"/>
+			</s:HGroup>
+		</s:VGroup>
+	</s:HGroup>
+
+</s:Group>

@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="1024" height="768"
+		 creationComplete=" creatonCompleteHandler();">
+	<fx:Script>
+		<![CDATA[
+			import com.as3nui.airkinect.extended.manager.AIRKinectManager;
+			import com.as3nui.airkinect.extended.manager.gestures.AIRKinectGestureManager;
+			import com.as3nui.airkinect.extended.manager.gestures.SwipeGesture;
+			import com.as3nui.airkinect.extended.manager.skeleton.ExtendedSkeleton;
+			import com.as3nui.nativeExtensions.kinect.AIRKinect;
+			import com.as3nui.nativeExtensions.kinect.data.AIRKinectSkeleton;
+			import com.as3nui.nativeExtensions.kinect.data.AIRKinectSkeletonFrame;
+			import com.as3nui.nativeExtensions.kinect.data.AIRKinectSkeletonJoint;
+			import com.as3nui.nativeExtensions.kinect.events.CameraFrameEvent;
+			import com.as3nui.nativeExtensions.kinect.events.SkeletonFrameEvent;
+			import com.as3nui.nativeExtensions.kinect.settings.AIRKinectCameraResolutions;
+			import com.as3nui.nativeExtensions.kinect.settings.AIRKinectFlags;
+			import com.as3nui.nativeExtensions.kinect.settings.AIRKinectTransformSmoothParameters;
+
+			import mx.events.FlexEvent;
+
+			private var _activeSkeleton:ExtendedSkeleton;
+
+			private static const KINECT_MAX_DEPTHIN_FLASH:uint = 0;
+			private var _scaler:Vector3D;
+
+			// RGBカメラ, 近赤外線カメラ, 骨格追跡を使用する初期化フラグ
+			private static const CLR_DPTH_SKLTN:uint =
+				AIRKinectFlags.NUI_INITIALIZE_FLAG_USES_COLOR |
+				AIRKinectFlags.NUI_INITIALIZE_FLAG_USES_DEPTH_AND_PLAYER_INDEX |
+				AIRKinectFlags.NUI_INITIALIZE_FLAG_USES_SKELETON;
+
+			private function creatonCompleteHandler():void {
+
+
+				start_clickHandler(null);
+
+			}
+			protected function start_clickHandler(event:MouseEvent):void
+			{
+				var isInit:Boolean = AIRKinectManager.initialize(CLR_DPTH_SKLTN);
+
+				if (isInit) {
+					message.text = "接続しました。";
+					titleCamera.visible =
+						titleDepthCamera.visible = down.visible = true;
+					skeletonGrp.visible = true;
+
+					rgbCamera.width = depthCamera.width = 320;
+					rgbCamera.height = depthCamera.height = 240;
+					nmrcStprAngle.value = AIRKinect.getKinectAngle() as Number;
+
+					init();
+
+				} else {
+					message.text = "接続に失敗しました。";
+				}
+				start.enabled = !isInit;
+			}
+
+			protected function down_clickHandler(event:MouseEvent):void
+			{
+				AIRKinectManager.shutdown();
+				rgbCamera.source = depthCamera.source = null;
+				LStage.text = RStage.text = "";
+				rgbCamera.width = 0;
+				rgbCamera.height = 0;
+				start.visible = false;
+				titleCamera.visible = titleDepthCamera.visible = down.visible = false;
+				skeletonGrp.visible = false;
+				message.text = "接続終了しました。";
+			}
+
+			private function init():void {
+				// RGBカメラのイベント取得
+				AIRKinectManager.onRGBFrameUpdate.add(onRGBCameraEventHandler);
+				AIRKinectManager.onDepthFrameUpdate.add(onDepthCameraEventHandler);
+				AIRKinectManager.onSkeletonAdded.add(onSkeletonFrameEventHandler);
+				SwipeGesture.DISPATCH_DELAY = 100;
+			}
+
+			private function onRGBCameraEventHandler(data:BitmapData):void {
+				rgbCamera.source = data;
+			}
+
+			private function onDepthCameraEventHandler(data:BitmapData, b:ByteArray):void {
+				depthCamera.source = data;
+			}
+
+			private function onSkeletonFrameEventHandler(data:ExtendedSkeleton):void {
+				addSkeleton(data);
+			}
+			private function addSkeleton(
+				skeleton:ExtendedSkeleton):void {
+				if (!_activeSkeleton) {
+					swipe(skeleton);
+				}
+			}
+
+			private function swipe(skeleton:ExtendedSkeleton):void {
+				_activeSkeleton = skeleton;
+				var lSwipeGesture:SwipeGesture = new SwipeGesture(_activeSkeleton, AIRKinectSkeleton.HAND_LEFT,
+					null, true, true, false);
+				var rSwipeGesture:SwipeGesture = new SwipeGesture(_activeSkeleton, AIRKinectSkeleton.HAND_RIGHT,
+					null, true, true, false);
+				var lfSwipeGesture:SwipeGesture = new SwipeGesture(_activeSkeleton, AIRKinectSkeleton.FOOT_LEFT,
+					null, true, true, false);
+				var rfSwipeGesture:SwipeGesture = new SwipeGesture(_activeSkeleton, AIRKinectSkeleton.FOOT_RIGHT,
+					null, true, true, false);
+
+				lSwipeGesture.onGestureComplete.add(onLSwipeComplete);
+				rSwipeGesture.onGestureComplete.add(onRSwipeComplete);
+				lfSwipeGesture.onGestureComplete.add(onlfSwipeComplete);
+				rfSwipeGesture.onGestureComplete.add(onrfSwipeComplete);
+
+				AIRKinectGestureManager.addGesture(lSwipeGesture);
+				AIRKinectGestureManager.addGesture(rSwipeGesture);
+				AIRKinectGestureManager.addGesture(lfSwipeGesture);
+				AIRKinectGestureManager.addGesture(rfSwipeGesture);
+			}
+
+
+			private function onSkeletonRemoved(skeleton:ExtendedSkeleton):void {
+
+			}
+
+			private function onLSwipeComplete(swipeGesture:SwipeGesture):void {
+				switch (swipeGesture.currentSwipeDirection) {
+					case "up":
+						LStage.text = "左手：↑";
+						break;
+					case "down":
+						LStage.text = "左手：↓";
+						break;
+					case "right":
+						LStage.text = "左手：←";
+						break;
+					case "left":
+						LStage.text = "左手：→";
+						break;
+				}
+			}
+
+			private function onRSwipeComplete(swipeGesture:SwipeGesture):void {
+				switch (swipeGesture.currentSwipeDirection) {
+					case "up":
+						RStage.text = "右手：↑";
+						break;
+					case "down":
+						RStage.text = "右手：↓";
+						break;
+					case "right":
+						RStage.text = "右手：←";
+						break;
+					case "left":
+						RStage.text = "右手：→";
+						break;
+				}
+			}
+
+			private function onlfSwipeComplete(swipeGesture:SwipeGesture):void {
+				switch (swipeGesture.currentSwipeDirection) {
+					case "up":
+						LfStage.text = "左足：↑";
+						break;
+					case "down":
+						LfStage.text = "左足：↓";
+						break;
+					case "right":
+						LfStage.text = "左足：←";
+						break;
+					case "left":
+						LfStage.text = "左足：→";
+						break;
+				}
+			}
+
+			private function onrfSwipeComplete(swipeGesture:SwipeGesture):void {
+				switch (swipeGesture.currentSwipeDirection) {
+					case "up":
+						RfStage.text = "右足：↑";
+						break;
+					case "down":
+						RfStage.text = "右足：↓";
+						break;
+					case "right":
+						RfStage.text = "右足：←";
+						break;
+					case "left":
+						RfStage.text = "右足：→";
+						break;
+				}
+			}
+
+
+			protected function btnSetAngle_clickHandler(event:MouseEvent):void
+			{
+				AIRKinect.instance.setKinectAngle(nmrcStprAngle.value as int);
+
+			}
+		]]>
+	</fx:Script>
+
+	<s:HGroup>
+		<s:VGroup width="326" height="320" paddingBottom="2" paddingLeft="2" paddingRight="2"
+				  paddingTop="2">
+			<s:Label id="message" fontFamily="ＭＳ ゴシック" fontSize="32" fontWeight="bold" text="スタンバイ"/>
+
+			<s:Label id="titleCamera" visible="false" fontFamily="ＭＳ ゴシック" fontSize="32" fontWeight="bold"  text="カメラ"/>
+			<s:BitmapImage id="rgbCamera" scaleX="-1" />
+			<s:Label id="titleDepthCamera" visible="false" fontFamily="ＭＳ ゴシック" fontSize="32"
+					 fontWeight="bold" text="近赤外線カメラ"/>
+			<s:BitmapImage id="depthCamera" scaleX="-1"/>
+			<s:VGroup>
+				<s:Button id="start" width="320" label="開始"
+						  click="start_clickHandler(event)" fontFamily="ＭＳ ゴシック" fontSize="32"
+						  fontWeight="bold"/>
+				<s:Button id="down" width="320" label="終了" click="down_clickHandler(event)"
+						  fontFamily="ＭＳ ゴシック" fontSize="32" fontWeight="bold" visible="false" />
+			</s:VGroup>
+		</s:VGroup>
+
+		<s:VGroup id="skeletonGrp" width="510" paddingBottom="6" paddingLeft="6" paddingRight="6" paddingTop="6"  visible="false">
+			<s:Label  fontFamily="ＭＳ ゴシック" fontSize="32" fontWeight="bold" text=""/>
+				<s:Label id="LStage"
+						 fontFamily="ＭＳ ゴシック"
+						 fontSize="128" fontWeight="bold"/>
+				<s:Label id="RStage"
+						 fontFamily="ＭＳ ゴシック"
+						 fontSize="128" fontWeight="bold"/>
+				<s:Label id="LfStage"
+					 	fontFamily="ＭＳ ゴシック"
+					 	fontSize="128" fontWeight="bold"/>
+				<s:Label id="RfStage"
+						 fontFamily="ＭＳ ゴシック"
+						 fontSize="128" fontWeight="bold"/>
+			<s:HGroup>
+				<s:Button id="btnSetAngle" height="43" label="アングル設定"
+						  click="btnSetAngle_clickHandler(event)" fontFamily="ＭＳ ゴシック"
+						  fontSize="32" fontWeight="bold"/>
+				<s:NumericStepper id="nmrcStprAngle" width="174" fontFamily="ＭＳ ゴシック"
+								  fontSize="32" fontWeight="bold" maximum="27" minimum="-27"
+								  stepSize="2" value="0"/>
+			</s:HGroup>
+		</s:VGroup>
+	</s:HGroup>
+
+</s:Group>

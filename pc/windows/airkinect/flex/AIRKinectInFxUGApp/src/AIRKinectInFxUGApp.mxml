@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009"
+					   xmlns:s="library://ns.adobe.com/flex/spark"
+					   xmlns:mx="library://ns.adobe.com/flex/mx"
+					   xmlns:view="net.fxug.tokufxug.airkinect.view.*"
+					   >
+	<fx:Declarations />
+
+	<s:states>
+		<s:State name="default" />
+		<s:State name="mask" />
+		<s:State name="gesture" />
+	</s:states>
+
+	<view:AIRKinectBasicView excludeFrom="mask, gesture" />
+	<view:AIRKinectMaskView includeIn="mask" />
+	<view:AIRKinectGestureView includeIn="gesture" />
+</s:WindowedApplication>
