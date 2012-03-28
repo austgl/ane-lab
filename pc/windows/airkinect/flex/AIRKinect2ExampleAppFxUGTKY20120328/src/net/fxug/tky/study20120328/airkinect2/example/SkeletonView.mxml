@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="800" height="600">
+
+	<s:layout>
+		<s:VerticalLayout />
+	</s:layout>
+	<fx:Declarations />
+
+	<fx:Script>
+		<![CDATA[
+			import com.as3nui.nativeExtensions.air.kinect.Kinect;
+			import com.as3nui.nativeExtensions.air.kinect.KinectSettings;
+			import com.as3nui.nativeExtensions.air.kinect.constants.CameraResolution;
+			import com.as3nui.nativeExtensions.air.kinect.data.SkeletonJoint;
+			import com.as3nui.nativeExtensions.air.kinect.data.User;
+			import com.as3nui.nativeExtensions.air.kinect.events.CameraImageEvent;
+			import com.as3nui.nativeExtensions.air.kinect.events.DeviceEvent;
+
+			import mx.events.FlexEvent;
+
+			private var _settings:KinectSettings = null;
+
+			private function button1_clickHandler(event:MouseEvent):void
+			{
+				if (!Kinect.isSupported()) {
+					return;
+				}
+				_settings = new KinectSettings();
+
+				btnStart.enabled = false;
+				// Kinectセンサー取得
+				var kinect:Kinect = Kinect.getDevice();
+				kinect.addEventListener(DeviceEvent.STARTED, startHandler);
+				kinect.addEventListener(DeviceEvent.STOPPED, stopHandler);
+
+				// スケルトン設定
+				settingSkl();
+
+				// Kinect開始
+				kinect.start(_settings);
+			}
+
+			private function startHandler(event:DeviceEvent):void {
+				btnStop.enabled = true;
+			}
+
+			private function stopHandler(event:DeviceEvent):void {
+				btnStart.enabled = true;
+				Kinect.getDevice().removeEventListener(DeviceEvent.STOPPED, stopHandler);
+			}
+
+			private function settingSkl():void {
+
+				// RGBカメラ更新イベントを追加
+				Kinect.getDevice().addEventListener(CameraImageEvent.RGB_IMAGE_UPDATE,
+					rgbImageUpdateHandler);
+				// スケルトン更新イベントを追加
+				addEventListener(Event.ENTER_FRAME, enterFrameHandler);
+
+				// RGBカメラ使用
+				_settings.rgbEnabled = _settings.skeletonEnabled = true;
+				// RGBカメラミラーモード
+				_settings.rgbMirrored = _settings.skeletonMirrored = chkBxRgbMr.selected;
+				_settings.rgbResolution = CameraResolution.RESOLUTION_640_480;
+			}
+
+			private function stop():void {
+				btnStop.enabled = false;
+				var kinect:Kinect = Kinect.getDevice();
+				kinect.removeEventListener(DeviceEvent.STARTED, startHandler);
+
+				kinect.removeEventListener(CameraImageEvent.RGB_IMAGE_UPDATE,
+					rgbImageUpdateHandler);
+				kinect.removeEventListener(Event.ENTER_FRAME, enterFrameHandler);
+
+				kinect.stop();
+			}
+
+			private function rgbImageUpdateHandler(event:CameraImageEvent):void {
+				bmpImgRgb.source = event.imageData;
+			}
+
+			private function enterFrameHandler(event:Event):void {
+
+				// スケルトンをグラフィックで表示
+				// フレーム毎にクリア
+				sklStage.graphics.clear();
+
+				// ユーザー情報を取得
+				for each(var user:User in Kinect.getDevice().usersWithSkeleton)
+				{
+					// ユーザー情報にある骨格情報を繰り返し取得
+					for each(var joint:SkeletonJoint in user.skeletonJoints)
+					{
+						// drawCircleで骨格情報を描画
+						sklStage.graphics.beginFill(0xFFFF00);
+						// RGBカメラに写っているユーザーのポジションから
+						// 骨格情報のポジションを取得して描画
+						sklStage.graphics.drawCircle(joint.rgbPosition.x - 640, joint.rgbPosition.y, 10);
+						sklStage.graphics.endFill();
+					}
+				}
+			}
+		]]>
+	</fx:Script>
+
+	<s:HGroup paddingTop="6" paddingBottom="6" paddingLeft="6" paddingRight="6">
+		<s:VGroup>
+			<s:HGroup width="640" height="480">
+				<s:BitmapImage id="bmpImgRgb"/>
+				<s:Group id="sklStage" width="320" height="240" />
+			</s:HGroup>
+
+			<s:HGroup paddingLeft="6" paddingRight="6">
+				<s:Label height="23" text="スケルトン" verticalAlign="middle"/>
+				<s:CheckBox id="chkBxRgbMr" label="ミラーモード"/>
+			</s:HGroup>
+		</s:VGroup>
+	</s:HGroup>
+
+	<s:HGroup>
+		<s:Button id="btnStart" width="90" height="50" label="開始" fontSize="24" click="button1_clickHandler(event)"/>
+		<s:Button id="btnStop" width="90" height="50" label="終了" fontSize="24" click="stop()" enabled="false"/>
+	</s:HGroup>
+</s:Group>

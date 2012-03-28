@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009"
+					   xmlns:s="library://ns.adobe.com/flex/spark"
+					   xmlns:mx="library://ns.adobe.com/flex/mx"
+					   xmlns:example="net.fxug.tky.study20120328.airkinect2.example.*"
+					   xmlns:containers="ws.tink.spark.containers.*"
+					   width="1000" height="750">
+	<fx:Declarations>
+		<s:RadioButtonGroup id="rgbGrpKinect" />
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+
+			protected function rgb_clickHandler(event:MouseEvent):void
+			{
+				switch (true) {
+					case rgbRgb.selected:
+						rgbVw.visible = true;
+						depthVw.visible = false;
+						sklVw.visible = false;
+						dcVw.visible = false;
+						break;
+					case rgbDpth.selected:
+						rgbVw.visible = false;
+						depthVw.visible = true;
+						sklVw.visible = false;
+						dcVw.visible = false;
+						break;
+					case rgbSkltn.selected:
+						rgbVw.visible = false;
+						depthVw.visible = false;
+						sklVw.visible = true;
+						dcVw.visible = false;
+						break;
+					case rgbDc.selected:
+						rgbVw.visible = false;
+						depthVw.visible = false;
+						sklVw.visible = false;
+						dcVw.visible = true;
+						break;
+				}
+			}
+		]]>
+	</fx:Script>
+	<s:VGroup>
+		<s:HGroup paddingTop="6" paddingLeft="6">
+			<s:RadioButton id="rgbRgb"  label="RGBカメラ" group="{rgbGrpKinect}" selected="true" click="rgb_clickHandler(event)"/>
+			<s:RadioButton id="rgbDpth" label="深度カメラ" group="{rgbGrpKinect}" click="rgb_clickHandler(event)" />
+			<s:RadioButton id="rgbSkltn" label="骨格追跡" group="{rgbGrpKinect}"  click="rgb_clickHandler(event)" />
+			<s:RadioButton id="rgbDc" label="使用できる機能" group="{rgbGrpKinect}"  click="rgb_clickHandler(event)" />
+		</s:HGroup>
+
+		<s:Group>
+			<example:RGBView id="rgbVw" />
+			<example:DepthView id="depthVw" visible="false"/>
+			<example:SkeletonView id="sklVw" visible="false"/>
+			<example:DeviceCapabilitiesView id="dcVw" visible="false"/>
+		</s:Group>
+	</s:VGroup>
+</s:WindowedApplication>
