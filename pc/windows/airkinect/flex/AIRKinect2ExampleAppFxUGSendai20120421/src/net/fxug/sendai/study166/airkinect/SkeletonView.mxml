@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="800" height="600">
+
+	<s:layout>
+		<s:VerticalLayout />
+	</s:layout>
+	<fx:Declarations />
+
+	<fx:Script>
+		<![CDATA[
+			import com.as3nui.nativeExtensions.air.kinect.Kinect;
+			import com.as3nui.nativeExtensions.air.kinect.KinectSettings;
+			import com.as3nui.nativeExtensions.air.kinect.constants.CameraResolution;
+			import com.as3nui.nativeExtensions.air.kinect.data.SkeletonJoint;
+			import com.as3nui.nativeExtensions.air.kinect.data.User;
+			import com.as3nui.nativeExtensions.air.kinect.events.CameraImageEvent;
+			import com.as3nui.nativeExtensions.air.kinect.events.DeviceEvent;
+			import com.as3nui.nativeExtensions.air.kinect.events.UserFrameEvent;
+
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+
+			private var _settings:KinectSettings = null;
+
+			private function button1_clickHandler(event:MouseEvent):void
+			{
+				if (!Kinect.isSupported()) {
+					return;
+				}
+				_settings = new KinectSettings();
+
+				btnStart.enabled = false;
+				// Kinectセンサー取得
+				var kinect:Kinect = Kinect.getDevice();
+				kinect.addEventListener(DeviceEvent.STARTED, startHandler);
+				kinect.addEventListener(DeviceEvent.STOPPED, stopHandler);
+
+				// スケルトン設定
+				settingSkl();
+
+				// Kinect開始
+				kinect.start(_settings);
+			}
+
+			private function startHandler(event:DeviceEvent):void {
+				btnStop.enabled = true;
+				FlexGlobals.topLevelApplication.useAngle();
+			}
+
+			private function stopHandler(event:DeviceEvent):void {
+				btnStart.enabled = true;
+				Kinect.getDevice().removeEventListener(DeviceEvent.STOPPED, stopHandler);
+			}
+
+			private function settingSkl():void {
+
+				// カメラ更新イベントを追加
+				Kinect.getDevice().addEventListener(CameraImageEvent.DEPTH_IMAGE_UPDATE,
+					depthImageUpdateHandler);
+				// スケルトン更新イベントを追加
+				addEventListener(Event.ENTER_FRAME, enterFrameHandler);
+
+				// 深度カメラ使用, 骨格追跡使用
+				_settings.depthEnabled = _settings.skeletonEnabled = true;
+
+				// 深度カメラミラーモード
+				_settings.depthMirrored = _settings.skeletonMirrored = chkBxRgbMr.selected;
+				_settings.depthResolution = CameraResolution.RESOLUTION_640_480;
+			}
+
+			private function stop():void {
+				btnStop.enabled = false;
+				var kinect:Kinect = Kinect.getDevice();
+				kinect.removeEventListener(DeviceEvent.STARTED, startHandler);
+
+				kinect.removeEventListener(CameraImageEvent.DEPTH_IMAGE_UPDATE,
+					depthImageUpdateHandler);
+				kinect.removeEventListener(Event.ENTER_FRAME, enterFrameHandler);
+
+				kinect.stop();
+				FlexGlobals.topLevelApplication.useAngle(false);
+			}
+
+			private function depthImageUpdateHandler(event:CameraImageEvent):void {
+				bmpImgRgb.source = event.imageData;
+			}
+
+			private function enterFrameHandler(event:Event):void {
+
+				// スケルトンをグラフィックで表示
+				// フレーム毎にクリア
+				sklStage.graphics.clear();
+
+				// ユーザー情報を取得
+				for each(var user:User in Kinect.getDevice().usersWithSkeleton)
+				{
+					// 頭
+					line(user.head, user.neck);
+					line(user.neck, user.torso);
+
+					// 左腕
+					line(user.neck, user.leftShoulder);
+					line(user.leftShoulder, user.leftElbow);
+					line(user.leftElbow, user.leftHand);
+
+					// 右腕
+					line(user.neck, user.rightShoulder);
+					line(user.rightShoulder, user.rightElbow);
+					line(user.rightElbow, user.rightHand);
+
+					// 左足
+					line(user.torso, user.leftHip);
+					line(user.leftHip, user.leftKnee);
+					line(user.leftKnee, user.leftFoot);
+
+					// 右足
+					line(user.torso, user.rightHip);
+					line(user.rightHip, user.rightKnee);
+					line(user.rightKnee, user.rightFoot);
+
+					// ユーザー情報にある骨格情報を繰り返し取得
+					for each(var joint:SkeletonJoint in user.skeletonJoints)
+					{
+						// drawCircleで骨格情報を描画
+						sklStage.graphics.beginFill(0xFFFF00);
+						// RGBカメラに写っているユーザーのポジションから
+						// 骨格情報のポジションを取得して描画
+						sklStage.graphics.drawCircle(joint.depthPosition.x - 640, joint.depthPosition.y, 10);
+						sklStage.graphics.endFill();
+					}
+
+				}
+			}
+
+			private function line(start:SkeletonJoint, end:SkeletonJoint):void {
+				sklStage.graphics.lineStyle(2, 0xffff00);
+				sklStage.graphics.moveTo(start.depthPosition.x - 640, start.depthPosition.y);
+				sklStage.graphics.lineTo(end.depthPosition.x - 640, end.depthPosition.y);
+			}
+		]]>
+	</fx:Script>
+
+	<s:HGroup paddingTop="6" paddingBottom="6" paddingLeft="6" paddingRight="6">
+		<s:VGroup>
+			<s:HGroup width="640" height="480">
+				<s:BitmapImage id="bmpImgRgb"/>
+				<s:Group id="sklStage" width="320" height="240" />
+			</s:HGroup>
+
+			<s:HGroup paddingLeft="6" paddingRight="6">
+				<s:Label height="23" text="スケルトン" verticalAlign="middle"/>
+				<s:CheckBox id="chkBxRgbMr" label="ミラーモード"/>
+			</s:HGroup>
+		</s:VGroup>
+	</s:HGroup>
+
+	<s:HGroup>
+		<s:Button id="btnStart" width="90" height="50" label="開始" fontSize="24" click="button1_clickHandler(event)"/>
+		<s:Button id="btnStop" width="90" height="50" label="終了" fontSize="24" click="stop()" enabled="false"/>
+	</s:HGroup>
+</s:Group>

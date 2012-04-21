@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="800" height="600">
+
+	<s:layout>
+		<s:VerticalLayout />
+	</s:layout>
+	<fx:Declarations />
+
+	<fx:Script>
+		<![CDATA[
+			import com.as3nui.nativeExtensions.air.kinect.Kinect;
+			import com.as3nui.nativeExtensions.air.kinect.KinectSettings;
+			import com.as3nui.nativeExtensions.air.kinect.constants.CameraResolution;
+			import com.as3nui.nativeExtensions.air.kinect.data.SkeletonJoint;
+			import com.as3nui.nativeExtensions.air.kinect.data.User;
+			import com.as3nui.nativeExtensions.air.kinect.events.CameraImageEvent;
+			import com.as3nui.nativeExtensions.air.kinect.events.DeviceEvent;
+
+			import mx.collections.ArrayCollection;
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+
+			[Bindable]
+			private var cmrRsltnDp:ArrayCollection = new ArrayCollection(
+				[   {label:"160x120", value:CameraResolution.RESOLUTION_160_120},
+					{label:"320x240", value:CameraResolution.RESOLUTION_320_240},
+					{label:"640x480", value:CameraResolution.RESOLUTION_640_480}
+				]
+			);
+
+			private var _settings:KinectSettings = null;
+
+			private function button1_clickHandler(event:MouseEvent):void
+			{
+				if (!Kinect.isSupported()) {
+					return;
+				}
+				_settings = new KinectSettings();
+
+				btnStart.enabled = false;
+				// Kinectセンサー取得
+				var kinect:Kinect = Kinect.getDevice();
+				kinect.addEventListener(DeviceEvent.STARTED, startHandler);
+				kinect.addEventListener(DeviceEvent.STOPPED, stopHandler);
+
+				// Depthカメラ設定
+				settingDepth();
+
+				// Kinect開始
+				kinect.start(_settings);
+
+			}
+
+			private function startHandler(event:DeviceEvent):void {
+				btnStop.enabled = true;
+				FlexGlobals.topLevelApplication.useAngle();
+			}
+
+			private function stopHandler(event:DeviceEvent):void {
+				btnStart.enabled = true;
+				Kinect.getDevice().removeEventListener(DeviceEvent.STOPPED, stopHandler);
+				FlexGlobals.topLevelApplication.useAngle(false);
+			}
+
+			private function settingDepth():void {
+
+				// Depthカメラ更新イベントを追加
+				Kinect.getDevice().addEventListener(CameraImageEvent.DEPTH_IMAGE_UPDATE,
+					DepthImageUpdateHandler);
+				// Depthカメラ使用
+				_settings.depthEnabled = true;
+				// Depthカメラミラーモード
+				_settings.depthMirrored = chkBxDepthMr.selected;
+				// ユーザーカラー
+				_settings.depthShowUserColors = chkBxDepthShwUsrClrs.selected;
+				_settings.depthEnableNearMode = chkBxDepthNear.selected;
+				// Depth解像度
+				_settings.depthResolution = cmbBxDepth.selectedItem.value as Point;
+			}
+
+			private function stop():void {
+				btnStop.enabled = false;
+				var kinect:Kinect = Kinect.getDevice();
+				kinect.removeEventListener(DeviceEvent.STARTED, startHandler);
+				kinect.removeEventListener(CameraImageEvent.DEPTH_IMAGE_UPDATE,
+					DepthImageUpdateHandler);
+				kinect.stop();
+			}
+
+			private function DepthImageUpdateHandler(event:CameraImageEvent):void {
+				bmpImgDepth.source = event.imageData;
+			}
+		]]>
+	</fx:Script>
+
+	<s:HGroup paddingTop="6" paddingBottom="6" paddingLeft="6" paddingRight="6">
+		<s:VGroup>
+			<s:Group width="640" height="480">
+				<s:BitmapImage id="bmpImgDepth"/>
+			</s:Group>
+			<s:HGroup paddingLeft="6" paddingRight="6">
+				<s:Label height="23" text="深度カメラ" verticalAlign="middle"/>
+				<s:CheckBox id="chkBxDepthMr" label="ミラーモード"/>
+				<s:CheckBox id="chkBxDepthShwUsrClrs" label="ユーザーカラー"/>
+				<s:CheckBox id="chkBxDepthNear" label="ニアモード"/>
+				<s:ComboBox id="cmbBxDepth" dataProvider="{cmrRsltnDp}" selectedIndex="0"/>
+			</s:HGroup>
+		</s:VGroup>
+	</s:HGroup>
+
+	<s:HGroup>
+		<s:Button id="btnStart" width="90" height="50" label="開始" fontSize="24" click="button1_clickHandler(event)"/>
+		<s:Button id="btnStop" width="90" height="50" label="終了" fontSize="24" click="stop()" enabled="false"/>
+	</s:HGroup>
+</s:Group>

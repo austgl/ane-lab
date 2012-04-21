@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="800" height="600">
+	<fx:Script>
+		<![CDATA[
+			import com.as3nui.nativeExtensions.air.kinect.Kinect;
+			import com.as3nui.nativeExtensions.air.kinect.data.DeviceCapabilities;
+
+			private function getDeviceCapabilities():void {
+				var dc:DeviceCapabilities = Kinect.getDevice().capabilities;
+
+				if (Kinect.isSupported()) {
+
+					// Kinect SDK フレームワーク
+					lblFrmwrk.text = dc.framework;
+					// RGBカメラ
+					lblRGB.text = dc.hasRGBCameraSupport ? "対応" : "未対応";
+					// 深度カメラ
+					lblDepth.text = dc.hasDepthCameraSupport ? "対応" : "未対応";
+					// スケルトン
+					lblSkltn.text = dc.hasSkeletonSupport ? "対応" : "未対応";
+					// スケルトン関節の回転角度
+					lblJntOrntn.text = dc.hasJointOrientationSupport ? "対応" : "未対応";
+					// スケルトン関節の回転角度による補正
+					lblJntOrntnCnfdnc.text = dc.hasJointOrientationConfidenceSupport ? "対応" : "未対応";
+					// ユーザーマスク
+					lblUserMask.text = dc.hasUserMaskSupport ? "対応" : "未対応";
+					// ポイントクラウド
+					lblPntCld.text = dc.hasPointCloudSupport ? "対応" : "未対応";
+					// ポイントクラウドRegion判定
+					lblPntCldRgn.text = dc.hasPointCloudRegionSupport ? "対応" : "未対応";
+					// Kinectの角度変更対応
+					lblCmrElvtn.text = dc.hasCameraElevationSupport ? "対応" : "未対応";
+					// Kinect最大接続数
+					lblMaxSnsrs.text = dc.maxSensors.toString();
+				}
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations />
+	<s:layout>
+		<s:VerticalLayout />
+	</s:layout>
+
+	<s:Form fontSize="20">
+		<s:layout>
+			<s:FormLayout gap="6" />
+		</s:layout>
+
+		<s:FormItem width="242" label="Kinect SDK Framework:" height="50">
+			<s:Label id="lblFrmwrk" fontWeight="bold"/>
+		</s:FormItem>
+
+		<s:FormItem width="242" label="RGBカメラ:" height="50">
+			<s:Label id="lblRGB" fontWeight="bold" fontFamily="MS PGothic"/>
+		</s:FormItem>
+
+		<s:FormItem width="242" label="深度カメラ:" height="50">
+			<s:Label id="lblDepth" fontWeight="bold" fontFamily="MS PGothic"/>
+		</s:FormItem>
+
+		<s:FormItem width="242" label="スケルトン:" height="50">
+			<s:Label id="lblSkltn" fontWeight="bold" fontFamily="MS PGothic"/>
+		</s:FormItem>
+
+		<s:FormItem width="242" label="スケルトン関節の回転角度:" height="50">
+			<s:Label id="lblJntOrntn" fontWeight="bold" fontFamily="MS PGothic"/>
+		</s:FormItem>
+
+		<s:FormItem width="242" label="スケルトン関節の回転角度による補正:" height="50">
+			<s:Label id="lblJntOrntnCnfdnc" fontWeight="bold" fontFamily="MS PGothic"/>
+		</s:FormItem>
+
+		<s:FormItem width="242" label="ユーザーマスク:" height="50">
+			<s:Label id="lblUserMask" fontWeight="bold" fontFamily="MS PGothic"/>
+		</s:FormItem>
+
+		<s:FormItem width="242" label="ポイントクラウド:" height="50">
+			<s:Label id="lblPntCld" fontWeight="bold" fontFamily="MS PGothic"/>
+		</s:FormItem>
+
+		<s:FormItem width="242" label="ポイントクラウド Region:" height="50">
+			<s:Label id="lblPntCldRgn" fontWeight="bold" fontFamily="MS PGothic"/>
+		</s:FormItem>
+
+		<s:FormItem width="242" label="Kinect 角度調整:" height="50">
+			<s:Label id="lblCmrElvtn" fontWeight="bold" fontFamily="MS PGothic"/>
+		</s:FormItem>
+		<s:FormItem width="242" label="センサー最大接続数:" height="50">
+			<s:Label id="lblMaxSnsrs" fontWeight="bold"/>
+		</s:FormItem>
+		<s:Button width="242" label="Capabilities 取得" click="getDeviceCapabilities();"/>
+	</s:Form>
+</s:Group>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009"
+					   xmlns:s="library://ns.adobe.com/flex/spark"
+					   xmlns:mx="library://ns.adobe.com/flex/mx"
+					   xmlns:airkinect="net.fxug.sendai.study166.airkinect.*"
+					   width="1000" height="750" >
+	<fx:Declarations>
+		<s:RadioButtonGroup id="rgbGrpKinect" />
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import com.as3nui.nativeExtensions.air.kinect.Kinect;
+			import com.as3nui.nativeExtensions.air.kinect.events.DeviceEvent;
+
+			import mx.events.FlexEvent;
+
+			protected function rgb_clickHandler(event:MouseEvent):void
+			{
+				switch (true) {
+					case rgbRgb.selected:
+						rgbVw.visible = true;
+						depthVw.visible = false;
+						sklVw.visible = false;
+						mskVw.visible = false;
+						dcVw.visible = false;
+						pcVw.visible = false;
+						break;
+					case rgbDpth.selected:
+						rgbVw.visible = false;
+						depthVw.visible = true;
+						sklVw.visible = false;
+						mskVw.visible = false;
+						dcVw.visible = false;
+						pcVw.visible = false;
+						break;
+					case rgbSkltn.selected:
+						rgbVw.visible = false;
+						depthVw.visible = false;
+						sklVw.visible = true;
+						mskVw.visible = false;
+						dcVw.visible = false;
+						pcVw.visible = false;
+						break;
+					case rgbMsk.selected:
+						rgbVw.visible = false;
+						depthVw.visible = false;
+						sklVw.visible = false;
+						mskVw.visible = true;
+						dcVw.visible = false;
+						pcVw.visible = false;
+						break;
+					case rgbPC.selected:
+						rgbVw.visible = false;
+						depthVw.visible = false;
+						sklVw.visible = false;
+						mskVw.visible = false;
+						dcVw.visible = false;
+						pcVw.visible = true;
+						break;
+					case rgbDc.selected:
+						rgbVw.visible = false;
+						depthVw.visible = false;
+						sklVw.visible = false;
+						mskVw.visible = false;
+						dcVw.visible = true;
+						pcVw.visible = false;
+						break;
+				}
+
+			}
+
+			protected function btnSetAngle_clickHandler(event:MouseEvent):void
+			{
+				Kinect.getDevice().cameraElevationAngle = nmrcStprAngle.value as int;
+			}
+
+			public function useAngle(value:Boolean = true):void
+			{
+				btnSetAngle.visible = nmrcStprAngle.visible = value;
+			}
+
+		]]>
+	</fx:Script>
+	<s:VGroup>
+		<s:HGroup paddingTop="6" paddingLeft="6">
+			<s:RadioButton id="rgbRgb"  label="RGBカメラ" group="{rgbGrpKinect}" selected="true" click="rgb_clickHandler(event)"/>
+			<s:RadioButton id="rgbDpth" label="深度カメラ" group="{rgbGrpKinect}" click="rgb_clickHandler(event)" />
+			<s:RadioButton id="rgbSkltn" label="骨格追跡" group="{rgbGrpKinect}"  click="rgb_clickHandler(event)" />
+			<s:RadioButton id="rgbMsk" label="マスク" group="{rgbGrpKinect}"  click="rgb_clickHandler(event)" />
+			<s:RadioButton id="rgbPC" label="ポイントクラウド" group="{rgbGrpKinect}"  click="rgb_clickHandler(event)" />
+			<s:RadioButton id="rgbDc" label="使用できる機能" group="{rgbGrpKinect}"  click="rgb_clickHandler(event)" />
+			<s:NumericStepper id="nmrcStprAngle" minimum="-27" maximum="27" stepSize="2" value="0"
+							  visible="false"/>
+			<s:Button id="btnSetAngle" label="アングル設定" click="btnSetAngle_clickHandler(event)" visible="false"/>
+		</s:HGroup>
+
+		<s:Group>
+			<airkinect:RGBView id="rgbVw" />
+			<airkinect:DepthView id="depthVw" visible="false"/>
+			<airkinect:SkeletonView id="sklVw" visible="false"/>
+			<airkinect:MaskView id="mskVw" visible="false" />
+			<airkinect:PointCloudView id="pcVw" visible="false" />
+			<airkinect:DeviceCapabilitiesView id="dcVw" visible="false"/>
+		</s:Group>
+	</s:VGroup>
+</s:WindowedApplication>
