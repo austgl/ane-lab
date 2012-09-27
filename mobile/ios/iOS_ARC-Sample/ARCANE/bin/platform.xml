@@ -1,0 +1,7 @@
+<platform xmlns="http://ns.adobe.com/air/extension/3.1">
+	<sdkVersion>5.0</sdkVersion>
+    <linkerOptions>
+		<option>-L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/arc</option>
+		<option>-larclite_iphoneos</option>
+	</linkerOptions>
+</platform>
