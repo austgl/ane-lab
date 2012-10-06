@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" applicationDPI="160" creationComplete="init();">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.chocbanana.iphone.nativeAlertANE;
+			private var ane:nativeAlertANE;
+			
+			public function init():void
+			{
+				ane = new nativeAlertANE();
+			}
+			
+			protected function btn_nativeAlert_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				var title:String = "てすとあらーと！";
+				var message:String = "てすとなめっせーじなう。";
+				var cancelbuttonTitle:String = "きゃんせるぴょん";
+				var otherbuttonTitle:String = "ふふっ、おっけー。";
+				
+				ane.showNativeAlert(title, message, cancelbuttonTitle, otherbuttonTitle);
+				
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 非ビジュアルエレメント (サービス、値オブジェクトなど) をここに配置 -->
+	</fx:Declarations>
+	<s:Button id="btn_nativeAlert" x="132" y="349" label="Alert"
+			  click="btn_nativeAlert_clickHandler(event)"/>
+	
+</s:Application>
