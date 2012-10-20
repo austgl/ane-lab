@@ -1,0 +1,13 @@
+<extension xmlns="http://ns.adobe.com/air/extension/3.4">
+    <id>so.ane.android.nfc.foreground.dispatch</id>
+    <versionNumber>1.0.0</versionNumber>
+    <platforms>
+        <platform name="Android-ARM">
+            <applicationDeployment>
+                <nativeLibrary>NFCForegroundDispatch.jar</nativeLibrary>
+                <initializer>so.ane.android.nfc.foreground.dispatch.NFCForegroundDispatchExtension</initializer>
+                <finalizer>so.ane.android.nfc.foreground.dispatch.NFCForegroundDispatchExtension</finalizer>
+            </applicationDeployment>
+        </platform>
+    </platforms>
+</extension>
