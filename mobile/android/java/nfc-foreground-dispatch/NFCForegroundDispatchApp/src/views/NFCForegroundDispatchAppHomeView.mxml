@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark" title="HomeView" creationComplete="view1_creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+
+			import so.ane.android.nfc.foreground.dispatch.NFCForegroundDispatch;
+			import so.ane.android.nfc.foreground.dispatch.event.NFCForegroundDispatchEvent;
+
+			private var _nfc:NFCForegroundDispatch = null
+			protected function view1_creationCompleteHandler(event:FlexEvent):void
+			{
+				_nfc = new NFCForegroundDispatch();
+				_nfc.addEventListener(NFCForegroundDispatchEvent.NEW_INTENT, onDispatch);
+			}
+
+			private function onDispatch(event:NFCForegroundDispatchEvent):void {
+				out.text = event.data;
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 非ビジュアルエレメント (サービス、値オブジェクトなど) をここに配置 -->
+	</fx:Declarations>
+	<s:layout>
+		<s:VerticalLayout />
+	</s:layout>
+	<s:Label id="out" text="wait..." />
+</s:View>
