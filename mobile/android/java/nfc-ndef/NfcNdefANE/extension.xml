@@ -1,0 +1,13 @@
+<extension xmlns="http://ns.adobe.com/air/extension/3.4">
+    <id>so.ane.android.nfc.ndef</id>
+    <versionNumber>1.0.0</versionNumber>
+    <platforms>
+        <platform name="Android-ARM">
+            <applicationDeployment>
+                <nativeLibrary>NfcNdefNative.jar</nativeLibrary>
+                <initializer>so.ane.android.nfc.ndef.NfcNdefExtension</initializer>
+                <finalizer>so.ane.android.nfc.ndef.NfcNdefExtension</finalizer>
+            </applicationDeployment>
+        </platform>
+    </platforms>
+</extension>

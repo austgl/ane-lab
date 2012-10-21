@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties includeAllClasses="true" useMultiPlatformConfig="true" version="3">
+  <includeClasses>
+    <classEntry path="so.ane.android.nfc.ndef.NfcNdef"/>
+    <classEntry path="so.ane.android.nfc.ndef.event.NfcNdefEvent"/>
+  </includeClasses>
+  <includeResources/>
+  <namespaceManifests/>
+</flexLibProperties>
