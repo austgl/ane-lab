@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark" title="NFC NDEF ANE"
+		creationComplete="view1_creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+
+			import so.ane.android.nfc.ndef.NfcNdef;
+			import so.ane.android.nfc.ndef.event.NfcNdefEvent;
+
+			private var nfcNdef:NfcNdef = null;
+			protected function view1_creationCompleteHandler(event:FlexEvent):void
+			{
+				nfcNdef = new NfcNdef();
+				if (nfcNdef.isSupport) {
+					nfcNdef.getSendMessage = getText;
+					nfcNdef.getWriteMessage = getText;
+					nfcNdef.addEventListener(NfcNdefEvent.RECEIVE, onReceive);
+					nfcNdef.addEventListener(NfcNdefEvent.WRITE_COMPLETE, onWrite);
+					nfcNdef.addEventListener(NfcNdefEvent.WRITE_ERROR, onWrite);
+				}
+			}
+
+			private function onReceive(event:NfcNdefEvent):void {
+					read.text = event.data;
+			}
+
+			private function getText():String {
+				return txt.text;
+			}
+
+			private function onWrite(event:NfcNdefEvent):void {
+				writeStatus.text = event.writeStatus;
+			}
+
+			private function wmode_changeHandler(event:Event):void {
+				nfcNdef.changeWriteMode(wmode.selected);
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<s:RadioButtonGroup id="grp" />
+	</fx:Declarations>
+	<s:layout>
+		<s:VerticalLayout />
+	</s:layout>
+
+	<s:HGroup verticalAlign="middle">
+		<s:Label text="READ:"/>
+		<s:Label id="read" />
+	</s:HGroup>
+
+	<s:HGroup verticalAlign="middle">
+		<s:Label text="WRITE/P2P:" verticalAlign="top"/>
+		<s:TextInput id="txt" />
+	</s:HGroup>
+
+	<s:VGroup height="65">
+		<s:HGroup verticalAlign="middle">
+			<s:Label text="WRITE Mode:"/>
+			<s:ToggleSwitch id="wmode" selected="false" change="wmode_changeHandler(event)"/>
+		</s:HGroup>
+		<s:Label id="writeStatus" verticalAlign="top"/>
+	</s:VGroup>
+
+</s:View>
