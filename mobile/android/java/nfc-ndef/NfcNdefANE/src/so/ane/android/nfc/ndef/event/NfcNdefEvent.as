@@ -4,9 +4,9 @@ package so.ane.android.nfc.ndef.event
 
 	public class NfcNdefEvent extends Event
 	{
-		public static const RECEIVE:String = "RECEIVE";
-		public static const WRITE_COMPLETE:String = "WRITE_COMPLETE";
+		public static const WRITE:String = "WRITE";
 		public static const WRITE_ERROR:String = "WRITE_ERROR";
+		public static const RECEIVE:String = "RECEIVE";
 
 		public var data:String;
 		public var writeStatus:String;

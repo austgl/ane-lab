@@ -13,8 +13,8 @@ package so.ane.android.nfc.ndef
 		private var _context:ExtensionContext = null;
 		private var _isSupport:Boolean = false;
 		private var _isWrite:Boolean = false;
-		private var _getSendMessage:Function = null;
-		private var _getWriteMessage:Function = null;
+		private var _enableNdefExchangeMode:Function = null;
+		private var _writeData:Function = null;
 
 		public function NfcNdef()
 		{
@@ -37,12 +37,12 @@ package so.ane.android.nfc.ndef
 			return _isWrite;
 		}
 
-		public function set getSendMessage(func:Function):void {
-			_getSendMessage = func;
+		public function set enableNdefExchangeMode(func:Function):void {
+			_enableNdefExchangeMode = func;
 		}
 
-		public function set getWriteMessage(func:Function):void {
-			_getWriteMessage = func;
+		public function set writeData(func:Function):void {
+			_writeData = func;
 		}
 
 		public function changeWriteMode(mode:Boolean):Boolean {
@@ -50,15 +50,16 @@ package so.ane.android.nfc.ndef
 			return _isWrite;
 		}
 
-		public function sendMessage(msg:String):void {
+		public function enabledPush(msg:String):void {
 				_context.call("enabledPush", msg);
 		}
 
 		private function onActivate(event:Event):void {
-			var text:String = _getSendMessage();
+			var text:String = _enableNdefExchangeMode();
 			var msg:* = _context.call("resume", text);
 			if (msg is String && msg != null) {
-				var nfcNdefEvent:NfcNdefEvent = new NfcNdefEvent(NfcNdefEvent.RECEIVE);
+				var nfcNdefEvent:NfcNdefEvent =
+							new NfcNdefEvent(NfcNdefEvent.RECEIVE);
 				nfcNdefEvent.data = String(msg);
 				dispatchEvent(nfcNdefEvent);
 			}
@@ -71,12 +72,12 @@ package so.ane.android.nfc.ndef
 		private function onInvoke(event:InvokeEvent):void {
 			var nfcNdefEvent:NfcNdefEvent = null;
 			if (_isWrite) {
-				var writeMsg:String =  _getWriteMessage();
+				var writeMsg:String =  _writeData();
 				var status:String = _context.call("write", writeMsg) as String;
 				var type:String = NfcNdefEvent.WRITE_ERROR;
 				switch(status) {
 					case "WRITE_OK":
-						type = NfcNdefEvent.WRITE_COMPLETE;
+						type = NfcNdefEvent.WRITE;
 						break;
 				}
 				nfcNdefEvent = new NfcNdefEvent(type);
