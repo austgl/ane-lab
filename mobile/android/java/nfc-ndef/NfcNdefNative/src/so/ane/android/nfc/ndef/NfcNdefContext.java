@@ -6,6 +6,7 @@ import java.util.Map;
 import so.ane.android.nfc.ndef.function.NfcNdefCreateFunction;
 import so.ane.android.nfc.ndef.function.NfcNdefExchangeFunction;
 import so.ane.android.nfc.ndef.function.NfcNdefPauseFunction;
+import so.ane.android.nfc.ndef.function.NfcNdefEnabledPushFunction;
 import so.ane.android.nfc.ndef.function.NfcNdefResumeFunction;
 import so.ane.android.nfc.ndef.function.NfcNdefWriteFunction;
 import so.ane.android.nfc.ndef.function.NfcNdefWriteModeFunction;
@@ -29,6 +30,7 @@ public class NfcNdefContext extends FREContext {
 		funcs.put("writeMode", new NfcNdefWriteModeFunction());
 		funcs.put("exchange", new NfcNdefExchangeFunction());
 		funcs.put("write", new NfcNdefWriteFunction());
+		funcs.put("enabledPush", new NfcNdefEnabledPushFunction());
 		return funcs;
 	}
 }

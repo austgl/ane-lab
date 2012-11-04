@@ -14,6 +14,7 @@ public class NfcNdefPauseFunction implements FREFunction {
 	@Override
 	public FREObject call(FREContext arg0, FREObject[] arg1) {
 		NfcAdapter adapter = NfcNdefManager.getInstance().adapter;
+		NfcNdefManager.getInstance().isResume = false;
 		if (adapter != null) {
 			adapter.disableForegroundDispatch(arg0.getActivity());
 		}

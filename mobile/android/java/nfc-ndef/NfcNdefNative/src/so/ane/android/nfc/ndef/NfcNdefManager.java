@@ -15,6 +15,7 @@ public class NfcNdefManager {
 	public PendingIntent pIntent;
 	public IntentFilter[] tagFilters;
 	public IntentFilter[] ndefFilters;
+	public boolean isResume = false;
 
 	private NfcNdefManager() {
 		super();
@@ -27,8 +28,12 @@ public class NfcNdefManager {
 		return instance;
 	}
 
+	public void enableForegroundNdefPush(Activity a, String msg) {
+		adapter.enableForegroundNdefPush(a, NdefUtil.toNdefMessage(msg));
+	}
+
 	public void enableNdefExchangeMode(Activity a, String msg) {
-			adapter.enableForegroundNdefPush(a, NdefUtil.toNdefMessage(msg));
+			enableForegroundNdefPush(a,msg);
 			adapter.enableForegroundDispatch(a, pIntent, ndefFilters, null);
 	}
 

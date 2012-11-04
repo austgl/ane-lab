@@ -6,7 +6,6 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.nfc.NfcAdapter;
-
 import com.adobe.fre.FREContext;
 import com.adobe.fre.FREFunction;
 import com.adobe.fre.FREObject;
@@ -20,11 +19,15 @@ public class NfcNdefResumeFunction implements FREFunction {
 		Intent intent = a.getIntent();
 		String msg = null;
 		String pushMsg = null;
+		NfcNdefManager.getInstance().isResume = true;
 		if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
 			msg = NdefUtil.getMessageBody(intent);
 		}
 		try {pushMsg = arg1[0].getAsString();}catch(Exception e){}
-		NfcNdefManager.getInstance().enableNdefExchangeMode(a, pushMsg);
+
+		if (pushMsg != null) {
+			NfcNdefManager.getInstance().enableNdefExchangeMode(a, pushMsg);
+		}
 		try {
 			return FREObject.newObject(msg);
 		} catch (Exception e){}
