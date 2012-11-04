@@ -37,6 +37,13 @@
 			private function wmode_changeHandler(event:Event):void {
 				nfcNdef.changeWriteMode(wmode.selected);
 			}
+
+			protected function txt_changeHandler(event:Event):void
+			{
+				nfcNdef.sendMessage(txt.text);
+
+			}
+
 		]]>
 	</fx:Script>
 	<fx:Declarations>
@@ -53,7 +60,7 @@
 
 	<s:HGroup verticalAlign="middle">
 		<s:Label text="WRITE/P2P:" verticalAlign="top"/>
-		<s:TextInput id="txt" />
+		<s:TextInput id="txt"  keyUp="txt_changeHandler(event)"/>
 	</s:HGroup>
 
 	<s:VGroup height="65">

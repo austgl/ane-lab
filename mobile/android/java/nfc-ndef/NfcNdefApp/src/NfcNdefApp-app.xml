@@ -251,7 +251,7 @@
 			<manifest android:installLocation="auto">
 			    <uses-permission android:name="android.permission.NFC"></uses-permission>
                  <application>
-                           <activity android:name="air.NfcNdefApp.AppEntry">
+                           <activity android:name="air.NfcNdefApp.AppEntry" android:launchMode="singleInstance">
                                 <intent-filter>
                                     <action android:name="android.nfc.action.NDEF_DISCOVERED" />
                                     <category android:name="android.intent.category.DEFAULT" />
