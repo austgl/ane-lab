@@ -50,6 +50,10 @@ package so.ane.android.nfc.ndef
 			return _isWrite;
 		}
 
+		public function sendMessage(msg:String):void {
+				_context.call("enabledPush", msg);
+		}
+
 		private function onActivate(event:Event):void {
 			var text:String = _getSendMessage();
 			var msg:* = _context.call("resume", text);
