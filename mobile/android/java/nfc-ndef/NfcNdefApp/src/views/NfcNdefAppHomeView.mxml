@@ -14,15 +14,16 @@
 			{
 				nfcNdef = new NfcNdef();
 				if (nfcNdef.isSupport) {
-					nfcNdef.getSendMessage = getText;
-					nfcNdef.getWriteMessage = getText;
+					nfcNdef.enableNdefExchangeMode= getText;
+					nfcNdef.writeData = getText;
 					nfcNdef.addEventListener(NfcNdefEvent.RECEIVE, onReceive);
-					nfcNdef.addEventListener(NfcNdefEvent.WRITE_COMPLETE, onWrite);
+					nfcNdef.addEventListener(NfcNdefEvent.WRITE, onWrite);
 					nfcNdef.addEventListener(NfcNdefEvent.WRITE_ERROR, onWrite);
 				}
 			}
 
 			private function onReceive(event:NfcNdefEvent):void {
+					status.text = event.type;
 					read.text = event.data;
 			}
 
@@ -31,19 +32,18 @@
 			}
 
 			private function onWrite(event:NfcNdefEvent):void {
-				writeStatus.text = event.writeStatus;
+				status.text = event.writeStatus;
 			}
 
 			private function wmode_changeHandler(event:Event):void {
 				nfcNdef.changeWriteMode(wmode.selected);
 			}
 
-			protected function txt_changeHandler(event:Event):void
+			protected function standbyPush(event:Event):void
 			{
-				nfcNdef.sendMessage(txt.text);
-
+				nfcNdef.enabledPush(txt.text);
+				status.text = txt.text;
 			}
-
 		]]>
 	</fx:Script>
 	<fx:Declarations>
@@ -60,7 +60,7 @@
 
 	<s:HGroup verticalAlign="middle">
 		<s:Label text="WRITE/P2P:" verticalAlign="top"/>
-		<s:TextInput id="txt"  keyUp="txt_changeHandler(event)"/>
+		<s:TextInput id="txt"  keyUp="standbyPush(event)"/>
 	</s:HGroup>
 
 	<s:VGroup height="65">
@@ -68,7 +68,7 @@
 			<s:Label text="WRITE Mode:"/>
 			<s:ToggleSwitch id="wmode" selected="false" change="wmode_changeHandler(event)"/>
 		</s:HGroup>
-		<s:Label id="writeStatus" verticalAlign="top"/>
+		<s:Label id="status" verticalAlign="top"/><s:Button label="Standby Push" click="standbyPush(event)"/>
 	</s:VGroup>
 
 </s:View>
