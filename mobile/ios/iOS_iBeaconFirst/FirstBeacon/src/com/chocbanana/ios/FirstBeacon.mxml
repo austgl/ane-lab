@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" applicationDPI="320" creationComplete="init(event)">
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			
+			private var beacon:libBeacon;
+			
+			[Bindable]
+			private var listArray:ArrayCollection;
+			
+			
+			protected function btn_beaconStart_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				listArray.removeAll();
+				beacon.start();
+				this.btn_beaconStart.enabled = false;
+				this.btn_beaconStop.enabled = true;
+			}
+			
+			protected function init(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				if(listArray == null){
+					listArray = new ArrayCollection();
+				}
+				
+				if(beacon == null){
+					beacon = new libBeacon();
+					beacon.addEventListener(StatusEvent.STATUS, runEvent);
+				}
+				this.btn_beaconStart.enabled = true;
+				this.btn_beaconStop.enabled = false;
+			}
+			
+			protected function btn_beaconStop_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				beacon.stop();
+				this.btn_beaconStart.enabled = true;
+				this.btn_beaconStop.enabled = false;
+			}
+			protected function runEvent(event:StatusEvent):void{
+				listArray.addItem(event.code);
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 非ビジュアルエレメント (サービス、値オブジェクトなど) をここに配置 -->
+	</fx:Declarations>
+	<s:List id="lst_beaconArea" x="22" y="140" width="596" height="750" dataProvider="{listArray}"/>
+	<!--
+	<s:TextArea id="txt_beaconArea" x="22" y="140" width="596" height="750"/>
+	-->
+	<s:HGroup x="10" y="22" width="620" height="94" horizontalAlign="center">
+		<s:Button id="btn_beaconStart" label="スタート" click="btn_beaconStart_clickHandler(event)"/>
+		<s:Spacer width="100" height="50"/>
+		<s:Button id="btn_beaconStop" label="ストップ" click="btn_beaconStop_clickHandler(event)"/>
+	</s:HGroup>	
+</s:Application>
