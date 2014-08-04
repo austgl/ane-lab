@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" title="HomeView" creationComplete="init(event)">
+	<fx:Declarations>
+		<!-- 非ビジュアルエレメント (サービス、値オブジェクトなど) をここに配置 -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import com.chocbanana.ios.libBatteryHRM1017;
+			import mx.events.FlexEvent;
+			import flash.events.StatusEvent;
+			
+			private var batt:libBatteryHRM1017;// = new libBatteryHRM1017();
+			
+			protected function init(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				batt = new libBatteryHRM1017();
+				batt.addEventListener(StatusEvent.STATUS, runEvent);
+			}
+						
+			protected function runEvent(event:StatusEvent):void{
+				trace(event.code);
+				if(event.level == "BT"){
+					lbl_battery.text = event.code as String;
+				}
+				if(event.level == "HT"){
+					lbl_th.text = event.code as String;
+				}
+				//listArray.addItem(event.code);
+			}
+		]]>
+	</fx:Script>
+	<s:Label x="31" y="65" width="84" text="バッテリー"/>
+	<s:Label id="lbl_battery" x="136" y="65" width="174" text="ラベル"/>
+	<s:Label x="31" y="100" width="84" text="温度"/>
+	<s:Label id="lbl_th" x="136" y="100" width="174" text="ラベル"/>
+</s:View>
