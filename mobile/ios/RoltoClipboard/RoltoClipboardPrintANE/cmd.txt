@@ -1,1 +1,0 @@
-/Users/st/flex13air15beta/bin/adt -package -storetype pkcs12 -keystore a.p12 -target ane roltoClipboardPrint.ane extension.xml -swc bin/RoltoClipboardPrintANE.swc -platform iPhone-ARM -C platform/iphone .
