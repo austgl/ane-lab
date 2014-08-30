@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		title="RoltoSample" creationComplete="view1_creationCompleteHandler(event)" 
+		touchBegin="gr_touchBeginHandler(event)"
+		touchMove="view1_touchMoveHandler(event)"
+		touchEnd="gr_touchEndHandler(event)">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.core.UIComponent;
+			import mx.events.FlexEvent;
+			
+			import net.klaap.rolto.RoltoClipboardPrint;
+			
+			private var rolto:RoltoClipboardPrint = new RoltoClipboardPrint();
+			
+			private var m:Mycelium = new Mycelium();
+			private var u:UIComponent = new UIComponent();
+			protected function view1_creationCompleteHandler(event:FlexEvent):void
+			{
+				Multitouch.inputMode = MultitouchInputMode.TOUCH_POINT;
+				u.width = 400;
+				u.height = 400;
+				u.addChild(m);
+				
+				gr.addElement(u);
+				
+				var ret:Object = rolto.isUseRolto();
+				if (ret == true) {
+					out.text = "使用可";
+				} else if (ret == null) {
+					out.text = "NULL";
+				} else {
+					out.text = "使用不可";
+				}
+			}
+			
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+				var bmd:BitmapData = new BitmapData(384,384,true,0xffffff);
+				bmd.draw(gr);
+				rolto.print(bmd);
+			}
+			
+			private var _isDrawLine:Boolean = false;
+			protected function gr_touchBeginHandler(event:TouchEvent):void
+			{
+				_isDrawLine = true;
+				_oldx = event.localX;
+				_oldy = event.localY;
+			}
+			
+			protected function gr_touchEndHandler(event:TouchEvent):void
+			{
+				_isDrawLine = false;
+				trace("end=" + event.localX + ":" + event.localY);
+			}
+			private var _oldx:Number = 0;
+			private var _oldy:Number = 0;
+			protected function view1_touchMoveHandler(event:TouchEvent):void
+			{
+				// TODO Auto-generated method stub
+				if (_isDrawLine) {
+//					gr.graphics.lineStyle(5, 0x000000, 0.7);
+//					gr.graphics.moveTo(_oldx, _oldy);
+//					gr.graphics.lineTo(event.localX, event.localY);
+					m.draw(_oldx,_oldy,event.localX,event.localY);
+					_oldx = event.localX;
+					_oldy = event.localY;
+					
+				}	
+			}
+			
+		]]>
+	</fx:Script>
+	<s:layout>
+		<s:VerticalLayout />
+	</s:layout>
+	<s:Label id="out" width="100%"/>
+	<s:Graphic id="gr" width="50%" height="50%" />
+	<s:Button label="Print" click="button1_clickHandler(event)"/>
+	<s:Button label="dispose" click="rolto.dispose();" />
+</s:View>
